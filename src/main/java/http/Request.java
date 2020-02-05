@@ -60,7 +60,6 @@ public class Request {
         BufferedReader in = new BufferedReader (new InputStreamReader(socket.getInputStream()));
 
         String serialized = this.getSerialized();
-        Logger.println(serialized);
         out.write(serialized);
         out.flush();
 

@@ -12,8 +12,6 @@ class Driver {
             URL url = new URL("http://httpbin.org/get?course=networking&assignment=1");
             Request request = new RequestBuilder().setUrl(url).setMethod(Method.GET).createRequest();
             final Response send = request.send();
-            Logger.println(send.getBody());
-
         }
         catch(Exception e){
             System.out.println("error");
