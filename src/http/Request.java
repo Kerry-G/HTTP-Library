@@ -10,19 +10,15 @@ import java.net.InetAddress;
 import java.net.Socket;
 import java.net.URL;
 import java.net.UnknownHostException;
-import java.util.ArrayList;
-import java.util.Iterator;
 
 public class Request {
 
     private Method method;
-    private String version;
+    private String version = "HTTP/1.0";
 
     private InetAddress address;
     private String url;
     private String path;
-
-
     private Headers headers;
     private String body;
 
@@ -31,7 +27,6 @@ public class Request {
         this.address = InetAddress.getByName(url.getHost());
         this.method = method;
         this.body = "";
-        this.version = "HTTP/1.0";
         this.headers = new Headers();
     }
 
@@ -41,7 +36,7 @@ public class Request {
           .append(Constants.SPACE)
           .append(this.path)
           .append(Constants.SPACE)
-          .append("HTTP/1.0")
+          .append(this.version)
           .append(Constants.CARRIAGE)
           .append(Constants.NEW_LINE);
 
@@ -58,8 +53,6 @@ public class Request {
         return sb.toString();
     }
 
-
-
     public Response send() throws IOException {
         Socket socket = new Socket(this.address, 80);
 
@@ -71,34 +64,12 @@ public class Request {
         out.write(serialized);
         out.flush();
 
-        boolean firtLine = true;
-        boolean iteratorReachedBody = false;
-        StringBuilder body = new StringBuilder();
-        Iterator<String> iterator = in.lines().iterator();
-        while(iterator.hasNext()){
-           String line = iterator.next();
-           if (firtLine){
-               firtLine = false;
-               System.out.println(line);
-           }
-           else if(line.isEmpty()) {
-               iteratorReachedBody = true;
-            }
-           else if(iteratorReachedBody){
-               body.append(line).append("\n");
-            } else {
-               String[] split = line.split(":");
-               System.out.println(split[0] + ":" + split[1].trim());
-           }
-
-       }
-
-        System.out.println("Body: " +body);
+        Response response = Response.fromBufferedReader(in);
 
         out.close();
         in.close();
         socket.close();
 
-        return new Response();
+        return response;
     }
 }
