@@ -1,17 +1,18 @@
-import java.net.URL;
-
-import http.Method;
-import http.Request;
-import http.RequestBuilder;
-import http.Response;
+import CLI.Httpc;
+import com.beust.jcommander.JCommander;
 import logger.Logger;
 
 class Driver {
     public static void main(String[] args) {
         try {
-            URL url = new URL("http://httpbin.org/get?course=networking&assignment=1");
-            Request request = new RequestBuilder().setUrl(url).setMethod(Method.GET).createRequest();
-            final Response send = request.send();
+            Httpc httpc = new Httpc();
+            JCommander.newBuilder()
+                      .addObject(httpc)
+                      .build()
+                      .parse(args);
+
+            Logger.println(httpc.toString());
+
         }
         catch(Exception e){
             System.out.println("error");
