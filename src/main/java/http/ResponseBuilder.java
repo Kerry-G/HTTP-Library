@@ -3,7 +3,7 @@ package http;
 public class ResponseBuilder {
     private String version;
     private String phrase;
-    private String status;
+    private Integer status;
     private Headers headers;
     private String body;
 
@@ -17,7 +17,7 @@ public class ResponseBuilder {
         return this;
     }
 
-    public ResponseBuilder setStatus(String status) {
+    public ResponseBuilder setStatus(Integer status) {
         this.status = status;
         return this;
     }

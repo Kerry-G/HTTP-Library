@@ -7,11 +7,11 @@ public class Response {
 
     private String version;
     private String phrase;
-    private String status;
+    private Integer status;
     private Headers headers;
     private String body;
 
-    public Response(String version, String phrase, String status, Headers headers, String body) {
+    public Response(String version, String phrase, Integer status, Headers headers, String body) {
         this.version = version;
         this.phrase = phrase;
         this.status = status;
@@ -27,7 +27,7 @@ public class Response {
         return phrase;
     }
 
-    public String getStatus() {
+    public Integer getStatus() {
         return status;
     }
 
@@ -54,7 +54,7 @@ public class Response {
                 firstLine = false;
                 final String[] split = line.split(" ");
                 rb.setVersion(split[0])
-                  .setStatus(split[1])
+                  .setStatus(Integer.valueOf(split[1]))
                   .setPhrase(split[2]);
             }
             else if(line.isEmpty()) {
