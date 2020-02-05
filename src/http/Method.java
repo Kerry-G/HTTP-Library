@@ -1,6 +1,16 @@
 package http;
 
 public enum Method {
-    GET,
-    POST,
+    GET("GET"),
+    POST("POST"),
+    ;
+
+    private final String name;
+    Method(String s) {
+        name = s;
+    }
+
+    @Override public String toString() {
+        return "Method{" + "name='" + name + '\'' + '}';
+    }
 }
