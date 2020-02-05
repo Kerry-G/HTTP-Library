@@ -1,11 +1,14 @@
 import java.net.InetAddress;
+import java.net.URL;
+
 import http.Method;
 import http.Request;
 
 class Driver {
     public static void main(String[] args) {
         try {
-            Request request = new Request(InetAddress.getByName("www.google.ca"), Method.GET);
+            URL url = new URL("http://" + "www.httpbin.org/status/418");
+            Request request = new Request(url, Method.GET);
             request.send();
         }
         catch(Exception e){
