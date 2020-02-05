@@ -1,23 +1,31 @@
+package http;
+
 import java.io.PrintWriter;
 import java.net.InetAddress;
 import java.net.Socket;
+import java.util.ArrayList;
 import java.util.Scanner;
 
-class Driver {
-    public static void main(String[] args) {
+public class Request {
+
+    private Method method;
+    private InetAddress url;
+    private Integer version;
+
+    private ArrayList<Header> headerList;
+    private byte[] body;
+
+
+
+    public Response send() {
+
         try {
-            InetAddress web = InetAddress.getByName("www.google.com");
-            Socket socket = new Socket(web, 80);
+            Socket socket = new Socket(this.url, 80);
 
             PrintWriter out = new PrintWriter(socket.getOutputStream());
             Scanner in = new Scanner(socket.getInputStream());
 
             out.write("GET / HTTP/1.0\r\nUser-Agent: Hello\r\n\r\n");
-
-            out.flush();
-
-            out.write("GET / HTTP/1.0\r\nUser-Agent: Hello\r\n\r\n");
-
             out.flush();
 
             while (in.hasNextLine()) {
@@ -27,8 +35,7 @@ class Driver {
             out.close();
             in.close();
             socket.close();
-        }
-        catch(Exception e){
+        } catch (Exception e) {
             System.out.println(e.getMessage());
         }
     }
