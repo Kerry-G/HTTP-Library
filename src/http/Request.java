@@ -34,6 +34,7 @@ public class Request {
         this.body = "";
         this.version = 1;
         this.headerList = new ArrayList<Header>();
+        this.headerList.add(new Header("User-Agent", "Hello"));
     }
 
     private StringBuilder getRequestLine(){
@@ -47,7 +48,7 @@ public class Request {
         for (Header header: headerList) {
             sb.append(header.serialize());
         }
-        sb.append(this.body);
+        sb.append("\\r\\n").append(this.body);
         return sb;
     }
 

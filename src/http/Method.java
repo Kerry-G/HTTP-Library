@@ -11,6 +11,6 @@ public enum Method {
     }
 
     @Override public String toString() {
-        return "Method{" + "name='" + name + '\'' + '}';
+        return name;
     }
 }
