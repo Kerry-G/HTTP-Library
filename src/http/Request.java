@@ -1,5 +1,7 @@
 package http;
 
+import logger.Logger;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -39,7 +41,7 @@ public class Request {
 
     private StringBuilder getRequestLine(){
         StringBuilder sb = new StringBuilder();
-        sb.append(method.toString()).append(" ").append(this.path).append(" HTTP/1.0").append("\\r\\n");
+        sb.append(method.toString()).append(" ").append(this.path).append(" HTTP/1.0").append("\r\n");
         return sb;
     }
 
@@ -48,7 +50,7 @@ public class Request {
         for (Header header: headerList) {
             sb.append(header.serialize());
         }
-        sb.append("\\r\\n").append(this.body);
+        sb.append("\r\n").append(this.body);
         return sb;
     }
 
@@ -61,6 +63,7 @@ public class Request {
         BufferedReader in = new BufferedReader (new InputStreamReader(socket.getInputStream()));
 
         String serialized = this.getSerialized().toString();
+        Logger.println(serialized);
         out.write(serialized);
         out.flush();
 

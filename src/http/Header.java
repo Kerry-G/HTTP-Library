@@ -34,7 +34,7 @@ public class Header {
     }
 
     public String serialize() {
-        return new StringBuilder().append(name).append(": ").append(value).append("\\r\\n").toString();
+        return new StringBuilder().append(name).append(": ").append(value).append("\r\n").toString();
     }
 
 
