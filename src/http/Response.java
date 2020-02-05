@@ -6,14 +6,9 @@ import java.util.ArrayList;
 public class Response {
 
     private Method method;
-    private InetAddress url;
-    private Integer version;
+    private String version;
 
-    private ArrayList<Header> headerList;
-    private byte[] body;
-
-
-
-
+    private Headers headers;
+    private String body;
 
 }

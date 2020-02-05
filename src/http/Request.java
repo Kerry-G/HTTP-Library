@@ -6,27 +6,24 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
-import java.io.PrintWriter;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.net.URL;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
-import java.util.Scanner;
-import java.util.function.Consumer;
-import java.util.stream.Stream;
+import java.util.Iterator;
 
 public class Request {
 
     private Method method;
-    private Integer version;
+    private String version;
 
     private InetAddress address;
     private String url;
     private String path;
 
 
-    private ArrayList<Header> headerList;
+    private Headers headers;
     private String body;
 
     public Request(URL url, Method method) throws UnknownHostException {
@@ -34,23 +31,31 @@ public class Request {
         this.address = InetAddress.getByName(url.getHost());
         this.method = method;
         this.body = "";
-        this.version = 1;
-        this.headerList = new ArrayList<Header>();
+        this.version = "HTTP/1.0";
+        this.headers = new Headers();
     }
 
     private StringBuilder getRequestLine(){
         StringBuilder sb = new StringBuilder();
-        sb.append(method.toString()).append(" ").append(this.path).append(" HTTP/1.0").append("\r\n");
+        sb.append(method)
+          .append(Constants.SPACE)
+          .append(this.path)
+          .append(Constants.SPACE)
+          .append("HTTP/1.0")
+          .append(Constants.CARRIAGE)
+          .append(Constants.NEW_LINE);
+
         return sb;
     }
 
-    private StringBuilder getSerialized(){
+    private String getSerialized(){
         StringBuilder sb = getRequestLine();
-        for (Header header: headerList) {
-            sb.append(header.serialize());
-        }
-        sb.append("\r\n").append(this.body);
-        return sb;
+        sb.append(headers)
+          .append(Constants.CARRIAGE)
+          .append(Constants.NEW_LINE)
+          .append(this.body);
+
+        return sb.toString();
     }
 
 
@@ -61,15 +66,34 @@ public class Request {
         OutputStreamWriter out = new OutputStreamWriter(socket.getOutputStream());
         BufferedReader in = new BufferedReader (new InputStreamReader(socket.getInputStream()));
 
-        String serialized = this.getSerialized().toString();
+        String serialized = this.getSerialized();
         Logger.println(serialized);
         out.write(serialized);
         out.flush();
 
-        in.lines().forEach((line) -> {
-            System.out.println(line);
-        });
+        boolean firtLine = true;
+        boolean iteratorReachedBody = false;
+        StringBuilder body = new StringBuilder();
+        Iterator<String> iterator = in.lines().iterator();
+        while(iterator.hasNext()){
+           String line = iterator.next();
+           if (firtLine){
+               firtLine = false;
+               System.out.println(line);
+           }
+           else if(line.isEmpty()) {
+               iteratorReachedBody = true;
+            }
+           else if(iteratorReachedBody){
+               body.append(line).append("\n");
+            } else {
+               String[] split = line.split(":");
+               System.out.println(split[0] + ":" + split[1].trim());
+           }
 
+       }
+
+        System.out.println("Body: " +body);
 
         out.close();
         in.close();
