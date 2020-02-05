@@ -11,6 +11,14 @@ public class Response {
     private Headers headers;
     private String body;
 
+    public Response(String version, String phrase, String status, Headers headers, String body) {
+        this.version = version;
+        this.phrase = phrase;
+        this.status = status;
+        this.headers = headers;
+        this.body = body;
+    }
+
     public String getVersion() {
         return version;
     }
@@ -32,7 +40,7 @@ public class Response {
     }
 
     static Response fromBufferedReader(BufferedReader in){
-        Response response = new Response();
+        ResponseBuilder rb = new ResponseBuilder();
         Headers headers = new Headers();
         boolean firstLine = true;
         boolean iteratorReachedBody = false;
@@ -45,9 +53,9 @@ public class Response {
             if (firstLine){
                 firstLine = false;
                 final String[] split = line.split(" ");
-                response.version = split[0];
-                response.status = split[1];
-                response.phrase = split[2];
+                rb.setVersion(split[0])
+                  .setStatus(split[1])
+                  .setPhrase(split[2]);
             }
             else if(line.isEmpty()) {
                 iteratorReachedBody = true;
@@ -60,9 +68,9 @@ public class Response {
             }
 
         }
-        response.headers = headers;
-        response.body = body.toString();
-        return response;
+        return rb.setHeaders(headers)
+                 .setBody(body.toString())
+                 .createResponse();
     }
 
 }
