@@ -30,13 +30,12 @@ public class Request {
     private String body;
 
     public Request(URL url, Method method) throws UnknownHostException {
-        this.path = url.getPath();
+        this.path = url.getPath() + "?" + url.getQuery();
         this.address = InetAddress.getByName(url.getHost());
         this.method = method;
         this.body = "";
         this.version = 1;
         this.headerList = new ArrayList<Header>();
-        this.headerList.add(new Header("User-Agent", "Hello"));
     }
 
     private StringBuilder getRequestLine(){

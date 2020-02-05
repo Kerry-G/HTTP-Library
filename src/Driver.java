@@ -7,7 +7,7 @@ import http.Request;
 class Driver {
     public static void main(String[] args) {
         try {
-            URL url = new URL("http://" + "www.httpbin.org/status/418");
+            URL url = new URL("http://httpbin.org/get?course=networking&assignment=1");
             Request request = new Request(url, Method.GET);
             request.send();
         }
