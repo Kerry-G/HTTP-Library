@@ -1,6 +1,7 @@
 import CLI.Httpc;
 import com.beust.jcommander.JCommander;
 import http.Response;
+import org.junit.Ignore;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -109,6 +110,23 @@ public class HttpcTests {
 
         final Response response = httpc.interpret().orElse(null);
         assertNull(response);
+
+    }
+
+    @Ignore
+    void PostDataWithOnlyFileRelativePath(){
+        //TODO: WIP: make it work with relatie path
+        Httpc httpc = new Httpc();
+        final JCommander httpcJc = httpc.getJc();
+
+
+        String[] argv = new String[]{"POST", "http://www.httpbin.org/anything", "-f", "data.txt" };
+
+        httpcJc.parse(argv);
+
+        final Response response = httpc.interpret().orElse(null);
+        assertNotNull(response);
+        System.out.println(response.getBody());
 
     }
 
