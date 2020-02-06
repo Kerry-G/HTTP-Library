@@ -21,9 +21,13 @@ public class Request {
     private Headers headers;
     private String body;
 
-    public Request(URL url, Method method, Headers headers, String body) throws UnknownHostException {
+    public Request(URL url, Method method, Headers headers, String body){
         this.path = url.getPath() + "?" + url.getQuery();
-        this.address = InetAddress.getByName(url.getHost());
+        try {
+            this.address = InetAddress.getByName(url.getHost());
+        } catch (UnknownHostException e) {
+            e.printStackTrace();
+        }
         this.method = method;
         this.body = body;
         this.headers = headers;
@@ -52,22 +56,28 @@ public class Request {
         return sb.toString();
     }
 
-    public Response send() throws IOException {
-        Socket socket = new Socket(this.address, 80);
+    public Response send() {
+        Socket socket = null;
+        Response response = null;
+        try {
+            socket = new Socket(this.address, 80);
 
-        OutputStreamWriter out = new OutputStreamWriter(socket.getOutputStream());
-        BufferedReader in = new BufferedReader (new InputStreamReader(socket.getInputStream()));
+            OutputStreamWriter out = new OutputStreamWriter(socket.getOutputStream());
+            BufferedReader in = new BufferedReader (new InputStreamReader(socket.getInputStream()));
 
-        String serialized = this.getSerialized();
-        out.write(serialized);
-        out.flush();
+            String serialized = this.getSerialized();
+            out.write(serialized);
+            out.flush();
 
-        Response response = Response.fromBufferedReader(in);
+            response = Response.fromBufferedReader(in);
 
-        out.close();
-        in.close();
-        socket.close();
+            out.close();
+            in.close();
+            socket.close();
 
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         return response;
     }
 }

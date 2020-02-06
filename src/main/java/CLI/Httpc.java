@@ -1,19 +1,48 @@
 package CLI;
 
-import com.beust.jcommander.Parameter;
+import com.beust.jcommander.JCommander;
+import http.Constants;
+import http.Response;
+import logger.Logger;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 public class Httpc {
 
-    @Parameter
-    private List<String> parameters = new ArrayList<>();
+    private JCommander jc;
 
-    @Parameter (names={"--verbosity", "-v"}, description= "Debug mode")
-    private boolean verbosity = false;
+    CommandGet commandGet;
+    CommandPost commandPost;
+    CommandHelp commandHelp;
 
-    @Override public String toString() {
-        return "Httpc{" + "parameters=" + parameters + ", verbosity=" + verbosity + '}';
+    public Httpc(){
+        commandGet = new CommandGet();
+        commandPost = new CommandPost();
+        commandHelp = new CommandHelp();
+        jc = JCommander.newBuilder()
+              .addCommand(CommandType.GET.toString(), commandGet)
+              .addCommand(CommandType.POST.toString(), commandPost)
+              .addCommand(CommandType.HELP.toString(), commandHelp)
+              .build();
     }
+
+    public Optional<Response> interpret(){
+        switch (CommandType.fromString(jc.getParsedCommand())) {
+            case GET:
+                return Optional.of(commandGet.run());
+            case POST:
+                return Optional.of(commandPost.run());
+            case HELP:
+                commandHelp.run();
+                return Optional.empty();
+        }
+        return Optional.empty();
+    }
+
+    public JCommander getJc(){
+        return jc;
+    }
+
+
 }

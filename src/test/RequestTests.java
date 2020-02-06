@@ -1,17 +1,14 @@
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
 import http.Method;
 import http.Request;
 import http.RequestBuilder;
 import http.Response;
-import logger.Logger;
-import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.net.UnknownHostException;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 public class RequestTests {
 
@@ -25,23 +22,14 @@ public class RequestTests {
             e.printStackTrace();
         }
         
-        Request request = null;
-        try {
-            request = new RequestBuilder()
+        Request request = new RequestBuilder()
                     .setUrl(url)
                     .setMethod(Method.GET)
                     .addHeader("User-Agent", "Mozilla/5.0")
                     .createRequest();
-        } catch (UnknownHostException e) {
-            e.printStackTrace();
-        }
+
         
-        Response response = null;
-        try {
-            response = request.send();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        Response response = request.send();
 
         assertEquals(200,response.getStatus(),"Status should be 200");
     }
@@ -57,18 +45,9 @@ public class RequestTests {
         }
 
         Request request = null;
-        try {
-            request = new RequestBuilder().setUrl(url).setMethod(Method.GET).createRequest();
-        } catch (UnknownHostException e) {
-            e.printStackTrace();
-        }
+        request = new RequestBuilder().setUrl(url).setMethod(Method.GET).createRequest();
 
-        Response send = null;
-        try {
-            send = request.send();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        Response send = request.send();
 
         assertEquals(202,send.getStatus(),"Status should be 200");
     }
@@ -79,22 +58,18 @@ public class RequestTests {
         try {
             url = new URL("http://httpbin.org/status/200");
         } catch (MalformedURLException e) {
-            assertEquals(null, e);
+            assertNull(e);
         }
 
-        try {
-            Request request = new RequestBuilder()
-                    .setUrl(url)
-                    .setMethod(Method.POST)
-                    .addHeader("accept", "application/json")
-                    .setBody("")
-                    .createRequest();
-            Response response = request.send();
+        Request request = new RequestBuilder()
+                .setUrl(url)
+                .setMethod(Method.POST)
+                .addHeader("accept", "application/json")
+                .setBody("")
+                .createRequest();
+        Response response = request.send();
 
-            assertEquals(200, response.getStatus());
-        } catch (IOException e) {
-            assertEquals(null,e);
-        }
+        assertEquals(200, response.getStatus());
 
 
     }

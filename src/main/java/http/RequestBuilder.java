@@ -43,7 +43,7 @@ public class RequestBuilder {
         return this;
     }
 
-    public Request createRequest() throws UnknownHostException {
+    public Request createRequest()  {
         return new Request(url, method, headers, body);
     }
 }
