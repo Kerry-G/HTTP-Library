@@ -1,5 +1,11 @@
 package logger;
 
+/**
+ * Centralization of the logging systems.
+ * You can set the amount of details you can with setVerbosity by giving it an enum Verbosity.
+ * @see #setVerbosity
+ * @see Verbosity
+ */
 public final class Logger {
 
     static Verbosity verbosity = Verbosity.Regular;

@@ -5,10 +5,11 @@ import logger.Logger;
 
 import java.util.Map;
 
+/**
+ * Starting class of the HTTP Library project
+ * @author Kerry Gougeon Ducharme (40028722) and Jonathan Mongeau (40006501)
+ */
 class Driver {
-
-
-
     public static void main(String[] args) {
         try {
 

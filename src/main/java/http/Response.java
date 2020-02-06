@@ -39,6 +39,11 @@ public class Response {
         return body;
     }
 
+    /**
+     * Takes a buffered reader that came from a Socket object and serialize it's information into a response object
+     * @param in
+     * @return Response object containing the information
+     */
     static Response fromBufferedReader(BufferedReader in){
         ResponseBuilder rb = new ResponseBuilder();
         Headers headers = new Headers();

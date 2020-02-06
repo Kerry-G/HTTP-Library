@@ -1,5 +1,8 @@
 package http;
 
+/**
+ * Builder class that builds Response object
+ */
 public class ResponseBuilder {
     private String version;
     private String phrase;

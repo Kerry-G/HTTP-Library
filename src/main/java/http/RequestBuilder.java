@@ -1,9 +1,10 @@
 package http;
 
-import java.io.File;
 import java.net.URL;
-import java.net.UnknownHostException;
 
+/**
+ * Builder class that builds Request Objects
+ */
 public class RequestBuilder {
     private URL url;
     private Method method;

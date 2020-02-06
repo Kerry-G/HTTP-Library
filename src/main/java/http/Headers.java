@@ -66,6 +66,10 @@ public class Headers implements Map<String, String> {
     }
 
 
+    /**
+     * toString method that formats headers in a way that we can send over the wire
+     * @return
+     */
     @Override public String toString() {
         StringBuilder sb = new StringBuilder();
         headers.forEach((key, value) -> sb.append(key)
