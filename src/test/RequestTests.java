@@ -27,19 +27,23 @@ public class RequestTests {
         
         Request request = null;
         try {
-            request = new RequestBuilder().setUrl(url).setMethod(Method.GET).createRequest();
+            request = new RequestBuilder()
+                    .setUrl(url)
+                    .setMethod(Method.GET)
+                    .addHeader("User-Agent", "Mozilla/5.0")
+                    .createRequest();
         } catch (UnknownHostException e) {
             e.printStackTrace();
         }
         
-        Response send = null;
+        Response response = null;
         try {
-            send = request.send();
+            response = request.send();
         } catch (IOException e) {
             e.printStackTrace();
         }
 
-        assertEquals(200,send.getStatus(),"Status should be 200");
+        assertEquals(200,response.getStatus(),"Status should be 200");
     }
 
     @Test

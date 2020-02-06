@@ -37,8 +37,8 @@ public class Headers implements Map<String, String> {
         return headers.get(o);
     }
 
-    @Override public String put(String s, String s2) {
-        return headers.put(s,s2);
+    @Override public String put(String key, String value) {
+        return headers.put(key, value);
     }
 
     @Override public String remove(Object o) {

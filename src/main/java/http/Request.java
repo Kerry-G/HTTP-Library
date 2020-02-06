@@ -22,13 +22,15 @@ public class Request {
     private Headers headers;
     private String body;
 
-    public Request(URL url, Method method) throws UnknownHostException {
+    public Request(URL url, Method method, Headers headers) throws UnknownHostException {
         this.path = url.getPath() + "?" + url.getQuery();
         this.address = InetAddress.getByName(url.getHost());
         this.method = method;
         this.body = "";
-        this.headers = new Headers();
+        this.headers = headers;
     }
+
+
 
     private StringBuilder getRequestLine(){
         StringBuilder sb = new StringBuilder();
