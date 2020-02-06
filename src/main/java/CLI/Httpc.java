@@ -25,6 +25,7 @@ public class Httpc {
               .addCommand(CommandType.POST.toString(), commandPost)
               .addCommand(CommandType.HELP.toString(), commandHelp)
               .build();
+        jc.setProgramName("Httpc");
     }
 
     public Optional<Response> interpret(){
