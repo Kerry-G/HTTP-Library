@@ -22,7 +22,10 @@ public class Request {
     private String body;
 
     public Request(URL url, Method method, Headers headers, String body){
-        this.path = url.getPath() + "?" + url.getQuery();
+        this.path = url.getPath();
+        if(url.getQuery() != null && !url.getQuery().isEmpty()){
+            this.path  += "?" + url.getQuery();
+        }
         try {
             this.address = InetAddress.getByName(url.getHost());
         } catch (UnknownHostException e) {
@@ -64,6 +67,10 @@ public class Request {
 
             OutputStreamWriter out = new OutputStreamWriter(socket.getOutputStream());
             BufferedReader in = new BufferedReader (new InputStreamReader(socket.getInputStream()));
+
+            if(this.method.equals(Method.POST) && this.body != null && !this.body.isEmpty()){
+                this.headers.put("Content-Length", String.valueOf(this.body.getBytes().length));
+            }
 
             String serialized = this.getSerialized();
             out.write(serialized);

@@ -53,9 +53,10 @@ public class Response {
             if (firstLine){
                 firstLine = false;
                 final String[] split = line.split(" ");
+                final String status = line.replace(split[0], "").replace(split[1], "").trim();
                 rb.setVersion(split[0])
                   .setStatus(Integer.valueOf(split[1]))
-                  .setPhrase(split[2]);
+                  .setPhrase(status);
             }
             else if(line.isEmpty()) {
                 iteratorReachedBody = true;
