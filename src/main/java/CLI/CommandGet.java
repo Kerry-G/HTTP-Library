@@ -32,18 +32,8 @@ public class CommandGet extends Command{
         if(verbosity) Logger.setVerbosity(Verbosity.Debug);
         Headers headers = Converters.stringListToHeaders(headersAsStringList);
 
-        URL url = null;
-        if (!parameters.startsWith("http://")) {
-            parameters = "http://" + parameters;
-        }
-        try {
-            url = new URL(parameters);
-        } catch (MalformedURLException e) {
-            Logger.error("Given URL is not well formatted.");
-        }
-
         return new RequestBuilder()
-                .setUrl(url)
+                .setUrl(verifyUrl(parameters))
                 .setMethod(Method.GET)
                 .setHeaders(headers)
                 .createRequest()

@@ -2,6 +2,10 @@ package CLI;
 
 import com.beust.jcommander.Parameter;
 import http.Response;
+import logger.Logger;
+
+import java.net.MalformedURLException;
+import java.net.URL;
 
 /**
  * Base class for Command classes. Define default value that every commands will need
@@ -21,4 +25,16 @@ public abstract class Command {
 
     abstract Response run();
 
+    URL verifyUrl(String parameters){
+        URL url = null;
+        if (!parameters.startsWith("http://")) {
+            parameters = "http://" + parameters;
+        }
+        try {
+            url = new URL(parameters);
+        } catch (MalformedURLException e) {
+            Logger.error("Given URL is not well formatted.");
+        }
+        return url;
+    }
 }

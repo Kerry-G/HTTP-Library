@@ -57,19 +57,9 @@ public class CommandPost extends Command {
 
         Headers headers = Converters.stringListToHeaders(headersAsStringList);
 
-        URL url = null;
-        if (!parameters.startsWith("http://")) {
-            parameters = "http://" + parameters;
-        }
-        try {
-            url = new URL(parameters);
-        } catch (MalformedURLException e) {
-            Logger.error("Given URL is not well formatted.");
-        }
-
 
         return new RequestBuilder()
-                .setUrl(url)
+                .setUrl(verifyUrl(parameters))
                 .setMethod(Method.POST)
                 .setHeaders(headers)
                 .setBody(body)
