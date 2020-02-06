@@ -42,7 +42,7 @@
             <resource>
                 <directory>src/main/resources</directory>
                 <excludes>
-                    <exclude>httpc.sh</exclude>
+                    <exclude>*.sh</exclude>
                 </excludes>
             </resource>
             <!-- resource processsing with a different output directory
@@ -50,7 +50,7 @@
             <resource>
                 <directory>src/main/resources</directory>
                 <includes>
-                    <include>httpc.sh</include>
+                    <include>*.sh</include>
                 </includes>
                 <!-- relative to target/classes
                      i.e. ${project.build.outputDirectory} -->

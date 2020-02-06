@@ -1,6 +1,7 @@
 #!/bin/bash
 
-java -jar ./HTTP-Library-1.0-SNAPSHOT-jar-with-dependencies.jar "$@"
+DIR="$(dirname "$0")/HTTP-Library-1.0-SNAPSHOT-jar-with-dependencies.jar"
+java -jar "$DIR" "$@"
 echo "Press any key to continue"
 while [ true ] ; do
 read -t 3 -n 1
