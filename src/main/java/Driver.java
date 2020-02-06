@@ -1,5 +1,3 @@
-
-import CLI.CommandType;
 import CLI.Httpc;
 import com.beust.jcommander.JCommander;
 import http.Constants;
