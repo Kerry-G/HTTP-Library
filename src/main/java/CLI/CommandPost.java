@@ -44,14 +44,14 @@ public class CommandPost extends Command {
         if(verbosity) Logger.setVerbosity(Verbosity.Debug);
         String body = null;
         if(file != null && data != null){
-            Logger.error("Define file or data, not both.");
+            throw new IllegalArgumentException("Define file or data, not both.");
         } else if ( data != null ){
             body = data;
         } else if ( file != null ){
             try {
                 body = new String(Files.readAllBytes(Paths.get(file)), StandardCharsets.UTF_8);
             } catch (IOException e) {
-                Logger.error("Can't read given file");
+                throw new IllegalArgumentException("Can't read given file.");
             }
         }
 

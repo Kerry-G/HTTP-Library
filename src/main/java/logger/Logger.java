@@ -27,7 +27,6 @@ public final class Logger {
     }
     public static void error(String s){
         internalPrintLn("[ERROR]: " + s);
-        System.exit(-1);
     }
 
 }

@@ -33,7 +33,7 @@ public abstract class Command {
         try {
             url = new URL(parameters);
         } catch (MalformedURLException e) {
-            Logger.error("Given URL is not well formatted.");
+            throw new IllegalArgumentException("Given URL is not well formatted.");
         }
         return url;
     }

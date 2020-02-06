@@ -22,6 +22,19 @@ public class HttpcTests {
     }
 
     @Test
+    void ErrorHandlingUrlMalformatted(){
+        Httpc httpc = new Httpc();
+        final JCommander httpcJc = httpc.getJc();
+
+        String[] argv = new String[]{"GET", "sasd..ww.httpbin.asdasd...org/"};
+
+        httpcJc.parse(argv);
+
+        final Response response = httpc.interpret().orElse(null);
+        assertNull(response);
+    }
+
+    @Test
     void GetStatus418(){
         Httpc httpc = new Httpc();
         final JCommander httpcJc = httpc.getJc();
@@ -82,6 +95,21 @@ public class HttpcTests {
         assertNotNull(response);
         System.out.println(response.getBody());
         assertTrue(response.getBody().contains(data));
+    }
+
+    @Test
+    void PostDataWithFileAndData(){
+        Httpc httpc = new Httpc();
+        final JCommander httpcJc = httpc.getJc();
+
+
+        String[] argv = new String[]{"POST", "http://www.httpbin.org/anything", "-d", " data", "-f", "file" };
+
+        httpcJc.parse(argv);
+
+        final Response response = httpc.interpret().orElse(null);
+        assertNull(response);
+
     }
 
 }

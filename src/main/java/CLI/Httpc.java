@@ -30,14 +30,18 @@ public class Httpc {
     }
 
     public Optional<Response> interpret(){
-        switch (CommandType.fromString(jc.getParsedCommand())) {
-            case GET:
-                return Optional.of(commandGet.run());
-            case POST:
-                return Optional.of(commandPost.run());
-            case HELP:
-                commandHelp.run();
-                return Optional.empty();
+        try {
+            switch (CommandType.fromString(jc.getParsedCommand())) {
+                case GET:
+                    return Optional.of(commandGet.run());
+                case POST:
+                    return Optional.of(commandPost.run());
+                case HELP:
+                    commandHelp.run();
+                    return Optional.empty();
+            }
+        } catch(Exception e){
+            Logger.error(e.getMessage());
         }
         return Optional.empty();
     }

@@ -27,7 +27,7 @@ public class Request {
         try {
             this.address = InetAddress.getByName(url.getHost());
         } catch (UnknownHostException e) {
-            e.printStackTrace();
+            throw new IllegalArgumentException("No such URL is known");
         }
         this.method = method;
         this.body = body;
@@ -81,7 +81,7 @@ public class Request {
             socket.close();
 
         } catch (IOException e) {
-            e.printStackTrace();
+            throw new IllegalArgumentException("Can't establish an connection.");
         }
         return response;
     }
