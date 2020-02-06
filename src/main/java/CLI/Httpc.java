@@ -28,7 +28,7 @@ public class Httpc {
         jc.setProgramName("Httpc");
     }
 
-    public Optional<Response> interpret(){
+    public Optional<Response> interpret() throws IllegalArgumentException{
         switch (CommandType.fromString(jc.getParsedCommand())) {
             case GET:
                 return Optional.of(commandGet.run());

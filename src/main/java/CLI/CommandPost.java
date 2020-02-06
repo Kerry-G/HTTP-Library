@@ -37,6 +37,10 @@ public class CommandPost extends Command {
 
     @Override Response run() {
         if(verbosity) Logger.setVerbosity(Verbosity.Debug);
+        if(file != null && data != null){
+            throw new IllegalArgumentException("Define file or data, not both.");
+        }
+
         Headers headers = Converters.stringListToHeaders(headersAsStringList);
 
         URL url = null;
