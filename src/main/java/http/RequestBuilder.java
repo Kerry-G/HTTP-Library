@@ -15,6 +15,7 @@ public class RequestBuilder {
         this.url = null;
         this.method = null;
         this.headers = new Headers();
+        this.body = "";
     }
 
     public RequestBuilder setUrl(URL url) {
@@ -43,6 +44,6 @@ public class RequestBuilder {
     }
 
     public Request createRequest() throws UnknownHostException {
-        return new Request(url, method, headers);
+        return new Request(url, method, headers, body);
     }
 }

@@ -17,20 +17,17 @@ public class Request {
     private String version = "HTTP/1.0";
 
     private InetAddress address;
-    private String url;
     private String path;
     private Headers headers;
     private String body;
 
-    public Request(URL url, Method method, Headers headers) throws UnknownHostException {
+    public Request(URL url, Method method, Headers headers, String body) throws UnknownHostException {
         this.path = url.getPath() + "?" + url.getQuery();
         this.address = InetAddress.getByName(url.getHost());
         this.method = method;
-        this.body = "";
+        this.body = body;
         this.headers = headers;
     }
-
-
 
     private StringBuilder getRequestLine(){
         StringBuilder sb = new StringBuilder();

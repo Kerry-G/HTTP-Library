@@ -16,7 +16,7 @@ import java.net.UnknownHostException;
 public class RequestTests {
 
     @Test
-    void GettingStatus200(){
+    void GetStatus200(){
         URL url = null;
         
         try {
@@ -47,7 +47,7 @@ public class RequestTests {
     }
 
     @Test
-    void GettingStatus202(){
+    void GetStatus202(){
         URL url = null;
 
         try {
@@ -73,4 +73,29 @@ public class RequestTests {
         assertEquals(202,send.getStatus(),"Status should be 200");
     }
 
+    @Test
+    void PostStatus200() {
+        URL url = null;
+        try {
+            url = new URL("http://httpbin.org/status/200");
+        } catch (MalformedURLException e) {
+            assertEquals(null, e);
+        }
+
+        try {
+            Request request = new RequestBuilder()
+                    .setUrl(url)
+                    .setMethod(Method.POST)
+                    .addHeader("accept", "application/json")
+                    .setBody("")
+                    .createRequest();
+            Response response = request.send();
+
+            assertEquals(200, response.getStatus());
+        } catch (IOException e) {
+            assertEquals(null,e);
+        }
+
+
+    }
 }
