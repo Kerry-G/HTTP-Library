@@ -10,7 +10,7 @@ public class CommandHelp extends Command{
      * @return null
      */
     @Override Response run() {
-        if (parameters.isEmpty()){
+        if (parameters == null || parameters.isEmpty()){
             Logger.println("httpc is a curl-like application but supports HTTP protocol only.\n" + "Usage:\n"
                                    + " httpc command [arguments]\n" + "The commands are:\n"
                                    + " get executes a HTTP GET request and prints the response.\n"
