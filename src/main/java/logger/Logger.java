@@ -25,7 +25,9 @@ public final class Logger {
     public static void debug(String s){
         if(verbosity.equals(Verbosity.Debug))  internalPrintLn("[DEBUG]: " + s);
     }
-    public static void error(String s){ internalPrintLn("[ERROR]: " + s);
+    public static void error(String s){
+        internalPrintLn("[ERROR]: " + s);
+        System.exit(-1);
     }
 
 }

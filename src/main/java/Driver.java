@@ -7,30 +7,26 @@ import java.util.Map;
 
 /**
  * Starting class of the HTTP Library project
+ *
  * @author Kerry Gougeon Ducharme (40028722) and Jonathan Mongeau (40006501)
  */
 class Driver {
     public static void main(String[] args) {
-        try {
-
-            Httpc httpc = new Httpc();
-            JCommander jc = httpc.getJc();
-            if(args.length == 0){
-                jc.usage();
-                return;
+        Httpc httpc = new Httpc();
+        JCommander jc = httpc.getJc();
+        if (args.length == 0) {
+            jc.usage();
+            return;
+        }
+        jc.parse(args);
+        httpc.interpret().ifPresent(response -> {
+            Logger.debug(
+                    response.getVersion() + Constants.SPACE + response.getStatus() + Constants.SPACE + response.getPhrase());
+            for (Map.Entry<String, String> header : response.getHeaders().entrySet()) {
+                Logger.debug(header.getKey() + ": " + header.getValue());
             }
-            jc.parse(args);
-            httpc.interpret().ifPresent(response -> {
-                Logger.debug(response.getVersion() + Constants.SPACE + response.getStatus() + Constants.SPACE + response.getPhrase());
-                for (Map.Entry<String, String> header : response.getHeaders().entrySet()) {
-                    Logger.debug(header.getKey() + ": " + header.getValue());
-                }
-                Logger.println(response.getBody());
-            });
+            Logger.println(response.getBody());
+        });
 
-        }
-        catch(Exception e){
-            System.out.println(e.getMessage());
-        }
     }
 }

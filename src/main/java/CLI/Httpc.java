@@ -5,6 +5,7 @@ import http.Constants;
 import http.Response;
 import logger.Logger;
 
+import java.io.IOException;
 import java.util.Map;
 import java.util.Optional;
 
@@ -28,7 +29,7 @@ public class Httpc {
         jc.setProgramName("Httpc");
     }
 
-    public Optional<Response> interpret() throws IllegalArgumentException{
+    public Optional<Response> interpret(){
         switch (CommandType.fromString(jc.getParsedCommand())) {
             case GET:
                 return Optional.of(commandGet.run());

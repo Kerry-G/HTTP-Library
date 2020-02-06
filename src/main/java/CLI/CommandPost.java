@@ -8,10 +8,15 @@ import http.Response;
 import logger.Logger;
 import logger.Verbosity;
 
-import java.io.File;
+import java.io.*;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class CommandPost extends Command {
@@ -37,8 +42,17 @@ public class CommandPost extends Command {
 
     @Override Response run() {
         if(verbosity) Logger.setVerbosity(Verbosity.Debug);
+        String body = null;
         if(file != null && data != null){
-            throw new IllegalArgumentException("Define file or data, not both.");
+            Logger.error("Define file or data, not both.");
+        } else if ( data != null ){
+            body = data;
+        } else if ( file != null ){
+            try {
+                body = new String(Files.readAllBytes(Paths.get(file)), StandardCharsets.UTF_8);
+            } catch (IOException e) {
+                Logger.error("Can't read given file");
+            }
         }
 
         Headers headers = Converters.stringListToHeaders(headersAsStringList);
@@ -53,7 +67,6 @@ public class CommandPost extends Command {
             Logger.error("Given URL is not well formatted.");
         }
 
-        String body = data;
 
         return new RequestBuilder()
                 .setUrl(url)
