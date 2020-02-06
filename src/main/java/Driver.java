@@ -15,7 +15,10 @@ class Driver {
 
             Httpc httpc = new Httpc();
             JCommander jc = httpc.getJc();
-
+            if(args.length == 0){
+                jc.usage();
+                return;
+            }
             jc.parse(args);
             httpc.interpret().ifPresent(response -> {
                 Logger.debug(response.getVersion() + Constants.SPACE + response.getStatus() + Constants.SPACE + response.getPhrase());
@@ -24,7 +27,6 @@ class Driver {
                 }
                 Logger.println(response.getBody());
             });
-
 
         }
         catch(Exception e){
