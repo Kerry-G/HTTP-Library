@@ -1,6 +1,8 @@
 import CLI.Httpc;
 import com.beust.jcommander.JCommander;
+import http.Request;
 import http.Response;
+import logger.Logger;
 import org.junit.Ignore;
 import org.junit.jupiter.api.Test;
 
@@ -113,14 +115,42 @@ public class HttpcTests {
 
     }
 
+    @Test
+    void GetRedirectionUnderMaxTries(){
+        Httpc httpc = new Httpc();
+        final JCommander httpcJc = httpc.getJc();
+
+        String[] argv = new String[]{"GET", "-v", "http://httpbin.org/absolute-redirect/" + Integer.toString(Request.MAXTRIES-1)};
+        httpcJc.parse(argv);
+
+        final Response response = httpc.interpret().orElse(null);
+        Logger.println(response.getHeaders().toString());
+        assertNotNull(response);
+        assertEquals(200, response.getStatus());
+    }
+
+    @Test
+    void GetRedirectionOverMaxTries(){
+        Httpc httpc = new Httpc();
+        final JCommander httpcJc = httpc.getJc();
+
+        String[] argv = new String[]{"GET", "-v", "http://httpbin.org/absolute-redirect/" + Integer.toString(Request.MAXTRIES+1)};
+        httpcJc.parse(argv);
+
+        final Response response = httpc.interpret().orElse(null);
+        Logger.println(response.getHeaders().toString());
+        assertNotNull(response);
+        assertEquals(302, response.getStatus());
+    }
+
     @Ignore
     void PostDataWithOnlyFileRelativePath(){
-        //TODO: WIP: make it work with relatie path
+        //TODO: WIP: make it work with relative path
         Httpc httpc = new Httpc();
         final JCommander httpcJc = httpc.getJc();
 
 
-        String[] argv = new String[]{"POST", "http://www.httpbin.org/anything", "-f", "data.txt" };
+        String[] argv = new String[]{"POST", "http://www.httpbin.org/anything", "-f", "./data.txt" };
 
         httpcJc.parse(argv);
 
@@ -129,5 +159,7 @@ public class HttpcTests {
         System.out.println(response.getBody());
 
     }
+
+
 
 }
