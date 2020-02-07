@@ -39,9 +39,20 @@ public class CommandPost extends Command {
     @Parameter (names={"--file", "-f"}, description= "file")
     private String file;
 
+    @Parameter (names={"--output", "-o"}, description= "output")
+    private String output;
+
 
     @Override Response run() {
         if(verbosity) Logger.setVerbosity(Verbosity.Debug);
+        if(output != null) {
+            try {
+                Logger.setPrintStream(new PrintStream(new FileOutputStream(output)));
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
+        }
+
         String body = null;
         if(file != null && data != null){
             throw new IllegalArgumentException("Define file or data, not both.");

@@ -5,6 +5,9 @@ import http.*;
 import logger.Logger;
 import logger.Verbosity;
 
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.PrintStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -24,12 +27,22 @@ public class CommandGet extends Command{
     @Parameter (names={"--headers", "-h"}, description= "Headers")
     private List<String> headersAsStringList = new ArrayList<>();
 
+    @Parameter (names={"--output", "-o"}, description= "output")
+    private String output;
+
     @Override public String toString() {
         return "CommandGet{" + "verbosity=" + verbosity + ", headers=" + headersAsStringList + "} " + super.toString();
     }
 
     @Override Response run() {
         if(verbosity) Logger.setVerbosity(Verbosity.Debug);
+        if(output != null) {
+            try {
+                Logger.setPrintStream(new PrintStream(new FileOutputStream(output)));
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
+        }
         Headers headers = Converters.stringListToHeaders(headersAsStringList);
 
         return new RequestBuilder()

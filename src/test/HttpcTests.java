@@ -173,26 +173,6 @@ public class HttpcTests {
     }
 
 
-//    @Test
-//    void PostDataWithFile(){
-//
-//        final URL resourceAsStream = this.getClass().getClassLoader().getResource("data.txt");
-//        assert resourceAsStream != null;
-//        final String path = resourceAsStream.getPath().substring(1);
-//
-//        Httpc httpc = new Httpc();
-//        final JCommander httpcJc = httpc.getJc();
-//
-//        String[] argv = new String[]{"POST", "http://www.httpbin.org/anything", "-f", path };
-//
-//        httpcJc.parse(argv);
-//
-//        final Response response = httpc.interpret().orElse(null);
-//        assertNotNull(response);
-//        System.out.println(response.getBody());
-//
-//    }
-
     @Test
     void TestHelpCommand(){
         TestablePrintStream stream = new TestablePrintStream();
