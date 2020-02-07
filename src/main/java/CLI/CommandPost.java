@@ -49,7 +49,8 @@ public class CommandPost extends Command {
             body = data;
         } else if ( file != null ){
             try {
-                body = new String(Files.readAllBytes(Paths.get(file)), StandardCharsets.UTF_8);
+                final Path path = Paths.get(file).toAbsolutePath();
+                body = new String(Files.readAllBytes(path), StandardCharsets.UTF_8);
             } catch (IOException e) {
                 throw new IllegalArgumentException("Can't read given file.");
             }
