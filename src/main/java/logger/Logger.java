@@ -1,5 +1,7 @@
 package logger;
 
+import java.io.PrintStream;
+
 /**
  * Centralization of the logging systems.
  * You can set the amount of details you can with setVerbosity by giving it an enum Verbosity.
@@ -8,15 +10,21 @@ package logger;
  */
 public final class Logger {
 
+    static PrintStream ps;
+
     static Verbosity verbosity = Verbosity.Regular;
 
     public static void setVerbosity(Verbosity verbosity) {
         Logger.verbosity = verbosity;
     }
 
+    public static void setPrintStream(PrintStream ps){
+        Logger.ps = ps;
+    }
+
     private static void internalPrintLn(String s){
         if(verbosity.equals(Verbosity.None)) return;
-        System.out.println(s);
+        ps.println(s);
     }
 
     public static void println(String s){
