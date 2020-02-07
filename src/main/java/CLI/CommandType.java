@@ -3,6 +3,9 @@ package CLI;
 public enum CommandType {
     GET("GET"),
     POST("POST"),
+    PUT("PUT"),
+    HEAD("HEAD"),
+    DELETE("DELETE"),
     HELP("help"),
     ;
 

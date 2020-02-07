@@ -100,6 +100,26 @@ public class HttpcTests {
         assertTrue(response.getBody().contains(data));
     }
 
+    @Ignore
+    void PostFile(){
+        Httpc httpc = new Httpc();
+        final JCommander httpcJc = httpc.getJc();
+
+        String[] argv = new String[]{"POST", "http://www.httpbin.org/anything", "-f", "C:\\Users\\jonat\\dev\\HTTP-Library\\src\\test\\data.txt"};
+
+        httpcJc.parse(argv);
+
+        final Response response = httpc.interpret().orElse(null);
+        assertNotNull(response);
+        System.out.println(response.getBody());
+        assertEquals(200, response.getStatus());
+        assertTrue(
+                response.getBody().contains("here") &&
+                response.getBody().contains("is") &&
+                response.getBody().contains("some") &&
+                response.getBody().contains("data"));
+    }
+
     @Test
     void PostDataWithFileAndData(){
         Httpc httpc = new Httpc();
