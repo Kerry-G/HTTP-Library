@@ -18,7 +18,7 @@ class Driver {
             jc.usage();
             return;
         }
-        jc.parse(args);
+
         httpc.interpret().ifPresent(response -> {
             Logger.debug(
                     response.getVersion() + Constants.SPACE + response.getStatus() + Constants.SPACE + response.getPhrase());

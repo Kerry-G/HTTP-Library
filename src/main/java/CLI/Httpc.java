@@ -29,8 +29,9 @@ public class Httpc {
         jc.setProgramName("Httpc");
     }
 
-    public Optional<Response> interpret(){
+    public Optional<Response> interpret(String ...args){
         try {
+            jc.parse(args);
             switch (CommandType.fromString(jc.getParsedCommand())) {
                 case GET:
                     return Optional.of(commandGet.run());
