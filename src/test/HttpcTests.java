@@ -245,10 +245,4 @@ public class HttpcTests {
 
 }
 
-/*
-final InputStream resourceAsStream = this.getClass().getClassLoader().getResourceAsStream("data.txt");
-        assert resourceAsStream != null;
-                BufferedReader br = new BufferedReader(new InputStreamReader(resourceAsStream));
-                String content = br.lines().reduce("", String::concat);
-                System.out.println(content);
-*/
+
