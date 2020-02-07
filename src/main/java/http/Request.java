@@ -4,10 +4,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
-import java.net.InetAddress;
-import java.net.Socket;
-import java.net.URL;
-import java.net.UnknownHostException;
+import java.net.*;
 
 public class Request {
 
@@ -19,7 +16,40 @@ public class Request {
     private Headers headers;
     private String body;
 
+    public static final Integer MAXTRIES = 5;
+
     public Request(URL url, Method method, Headers headers, String body){
+        this.setURL(url);
+        this.method = method;
+        this.body = body;
+        this.headers = headers;
+    }
+
+    public Method getMethod() {
+        return method;
+    }
+
+    public String getVersion() {
+        return version;
+    }
+
+    public InetAddress getAddress() {
+        return address;
+    }
+
+    public String getPath() {
+        return path;
+    }
+
+    public Headers getHeaders() {
+        return headers;
+    }
+
+    public String getBody() {
+        return body;
+    }
+
+    private void setURL(URL url){
         this.path = url.getPath();
         if(url.getQuery() != null && !url.getQuery().isEmpty()){
             this.path  += "?" + url.getQuery();
@@ -29,9 +59,6 @@ public class Request {
         } catch (UnknownHostException e) {
             throw new IllegalArgumentException("No such URL is known");
         }
-        this.method = method;
-        this.body = body;
-        this.headers = headers;
     }
 
     private StringBuilder getRequestLine(){
@@ -57,7 +84,12 @@ public class Request {
         return sb.toString();
     }
 
-    public Response send() {
+    private void redirectTo(URL url){
+        this.setURL(url);
+
+    }
+
+    private Response sendIsolatedRequest() {
         Socket socket = null;
         Response response = null;
         try {
@@ -85,4 +117,30 @@ public class Request {
         }
         return response;
     }
+
+    public Response send(){
+
+        Response response = this.sendIsolatedRequest();
+        String location;
+        Headers headers;
+        URL url;
+
+        Integer noTries = 0;
+        while (response.getStatus() % 300 <= 99 && noTries < this.MAXTRIES){
+            headers = response.getHeaders();
+            location = headers.get("Location");
+            try {
+                url = new URL(location);
+            } catch (MalformedURLException e) {
+                break;
+            }
+
+            this.setURL(url);
+
+            response = this.sendIsolatedRequest();
+            noTries++;
+        }
+        return response;
+    }
+
 }

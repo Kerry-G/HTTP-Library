@@ -70,7 +70,7 @@ public class Response {
                 body.append(line).append(Constants.NEW_LINE); // Adding a /n so it's matches what we originally receive
             } else {
                 String[] split = line.split(":");
-                headers.put(split[0], split[1].trim());
+                headers.put(split[0], line.replace(split[0], "").replace(": ", ""));
             }
 
         }
