@@ -114,7 +114,6 @@ public class HttpcTests {
         Httpc httpc = new Httpc();
         final JCommander httpcJc = httpc.getJc();
 
-        String[] argv = new String[]{"POST", "http://www.httpbin.org/anything", "-f", "C:\\Users\\jonat\\dev\\HTTP-Library\\src\\test\\data.txt"};
         argv = new String[]{"POST", "http://www.httpbin.org/anything", "-f", "src/test/data.txt"};
 
         httpcJc.parse(argv);
@@ -171,27 +170,6 @@ public class HttpcTests {
         Logger.println(response.getHeaders().toString());
         assertNotNull(response);
         assertEquals(302, response.getStatus());
-    }
-
-
-    @Test
-    void PostDataWithFile(){
-
-        final URL resourceAsStream = this.getClass().getClassLoader().getResource("data.txt");
-        assert resourceAsStream != null;
-        final String path = resourceAsStream.getPath().substring(1);
-
-        Httpc httpc = new Httpc();
-        final JCommander httpcJc = httpc.getJc();
-
-        String[] argv = new String[]{"POST", "http://www.httpbin.org/anything", "-f", path };
-
-        httpcJc.parse(argv);
-
-        final Response response = httpc.interpret().orElse(null);
-        assertNotNull(response);
-        System.out.println(response.getBody());
-
     }
 
 
