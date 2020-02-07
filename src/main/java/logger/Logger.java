@@ -10,7 +10,7 @@ import java.io.PrintStream;
  */
 public final class Logger {
 
-    static PrintStream ps;
+    static PrintStream ps = System.out;
 
     static Verbosity verbosity = Verbosity.Regular;
 
