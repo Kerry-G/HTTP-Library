@@ -1,3 +1,6 @@
+[![Build Status](https://travis-ci.com/Kerry-G/HTTP-Library.svg?branch=master)](https://travis-ci.com/Kerry-G/HTTP-Library)
+[![Code Coverage](https://codecov.io/github/Kerry-G/HTTP-Library/coverage.svg)](https://codecov.io/gh/Kerry-G/HTTP-Library)
+
 # HTTP-Library
 HTTP Library Java Implementation with cURL-like Command Line.
 
