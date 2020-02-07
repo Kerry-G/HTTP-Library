@@ -6,6 +6,10 @@ import logger.Logger;
 import org.junit.Ignore;
 import org.junit.jupiter.api.Test;
 
+import java.io.BufferedOutputStream;
+import java.io.OutputStream;
+import java.net.URL;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 public class HttpcTests {
@@ -26,6 +30,9 @@ public class HttpcTests {
 
     @Test
     void ErrorHandlingUrlMalformatted(){
+        TestablePrintStream testablePrintStream = new TestablePrintStream();
+        Logger.setPrintStream(testablePrintStream);
+
         Httpc httpc = new Httpc();
         final JCommander httpcJc = httpc.getJc();
 
@@ -35,6 +42,8 @@ public class HttpcTests {
 
         final Response response = httpc.interpret().orElse(null);
         assertNull(response);
+        assertTrue(testablePrintStream.getInternalListString().stream().anyMatch(s -> s.equals("[ERROR]: No such URL is known")));
+
     }
 
     @Test
