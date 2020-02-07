@@ -110,12 +110,11 @@ public class HttpcTests {
     }
 
     @Test
-    void PostFile(){
+    void PostDataWithFileUsingRelativePath(){
         Httpc httpc = new Httpc();
         final JCommander httpcJc = httpc.getJc();
 
-        String[] argv = new String[]{"POST", "http://www.httpbin.org/anything", "-f", "C:\\Users\\jonat\\dev\\HTTP-Library\\src\\test\\data.txt"};
-        argv = new String[]{"POST", "http://www.httpbin.org/anything", "-f", "src/test/data.txt"};
+        String[] argv = new String[]{"POST", "http://www.httpbin.org/anything", "-f", "src/test/data.txt"};
 
         httpcJc.parse(argv);
 
