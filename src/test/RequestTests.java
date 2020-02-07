@@ -5,6 +5,8 @@ import http.Response;
 import org.junit.jupiter.api.Test;
 
 import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -14,11 +16,11 @@ public class RequestTests {
 
     @Test
     void GetStatus200(){
-        URL url = null;
+        URI url = null;
         
         try {
-            url = new URL("http://httpbin.org/status/200");
-        } catch (MalformedURLException e) {
+            url = new URI("http://httpbin.org/status/200");
+        } catch (URISyntaxException e) {
             e.printStackTrace();
         }
         
@@ -35,12 +37,12 @@ public class RequestTests {
     }
 
     @Test
-    void GetStatus202(){
-        URL url = null;
+    void GetStatus202() {
+        URI url = null;
 
         try {
-            url = new URL("http://httpbin.org/status/202");
-        } catch (MalformedURLException e) {
+            url = new URI("http://httpbin.org/status/202");
+        } catch (URISyntaxException e) {
             e.printStackTrace();
         }
 
@@ -53,11 +55,11 @@ public class RequestTests {
     }
 
     @Test
-    void PostStatus200() {
-        URL url = null;
+    void PostStatus200()  {
+        URI url = null;
         try {
-            url = new URL("http://httpbin.org/status/200");
-        } catch (MalformedURLException e) {
+            url = new URI("http://httpbin.org/status/200");
+        } catch (URISyntaxException e) {
             assertNull(e);
         }
 

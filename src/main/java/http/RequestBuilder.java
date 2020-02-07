@@ -1,12 +1,13 @@
 package http;
 
+import java.net.URI;
 import java.net.URL;
 
 /**
  * Builder class that builds Request Objects
  */
 public class RequestBuilder {
-    private URL url;
+    private URI url;
     private Method method;
     private Headers headers;
     private String body;
@@ -19,7 +20,7 @@ public class RequestBuilder {
         this.body = "";
     }
 
-    public RequestBuilder setUrl(URL url) {
+    public RequestBuilder setUrl(URI url) {
         this.url = url;
         return this;
     }

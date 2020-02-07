@@ -5,6 +5,8 @@ import http.Response;
 import logger.Logger;
 
 import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 
 /**
@@ -25,14 +27,14 @@ public abstract class Command {
 
     abstract Response run();
 
-    URL verifyUrl(String parameters){
-        URL url = null;
-        if (!parameters.startsWith("http://")) {
-            parameters = "http://" + parameters;
-        }
+    URI verifyUrl(String parameters){
+        URI url = null;
+//        if (!parameters.startsWith("http://")) {
+//            parameters = "http://" + parameters;
+//        }
         try {
-            url = new URL(parameters);
-        } catch (MalformedURLException e) {
+            url = new URI(parameters);
+        } catch (URISyntaxException e) {
             throw new IllegalArgumentException("Given URL is not well formatted.");
         }
         return url;

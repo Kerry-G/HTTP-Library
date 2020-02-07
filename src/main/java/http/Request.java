@@ -18,7 +18,7 @@ public class Request {
 
     public static final Integer MAXTRIES = 5;
 
-    public Request(URL url, Method method, Headers headers, String body){
+    public Request(URI url, Method method, Headers headers, String body){
         this.setURL(url);
         this.method = method;
         this.body = body;
@@ -49,7 +49,7 @@ public class Request {
         return body;
     }
 
-    private void setURL(URL url){
+    private void setURL(URI url){
         this.path = url.getPath();
         if(url.getQuery() != null && !url.getQuery().isEmpty()){
             this.path  += "?" + url.getQuery();
@@ -84,9 +84,8 @@ public class Request {
         return sb.toString();
     }
 
-    private void redirectTo(URL url){
+    private void redirectTo(URI url){
         this.setURL(url);
-
     }
 
     private Response sendIsolatedRequest() {
@@ -123,15 +122,15 @@ public class Request {
         Response response = this.sendIsolatedRequest();
         String location;
         Headers headers;
-        URL url;
+        URI url;
 
         Integer noTries = 0;
         while (response.getStatus() % 300 <= 99 && noTries < this.MAXTRIES){
             headers = response.getHeaders();
             location = headers.get("Location");
             try {
-                url = new URL(location);
-            } catch (MalformedURLException e) {
+                url = new URI(location);
+            } catch (URISyntaxException e) {
                 break;
             }
 
