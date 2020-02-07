@@ -193,6 +193,54 @@ public class HttpcTests {
 
     }
 
+    @Test
+    void TestHelpCommand(){
+        TestablePrintStream stream = new TestablePrintStream();
+        Logger.setPrintStream(stream);
+        Httpc httpc = new Httpc();
+        final JCommander httpcJc = httpc.getJc();
+
+        String[] argv = new String[]{"help"};
+        httpcJc.parse(argv);
+        httpc.interpret().orElse(null);
+
+        assertTrue(stream.getInternalListString().size() > 0);
+        assertTrue(stream.getInternalListString().get(0).contains("httpc is a curl-like application but supports HTTP protocol only."));
+
+    }
+
+    @Test
+    void TestHelpGet(){
+        TestablePrintStream stream = new TestablePrintStream();
+        Logger.setPrintStream(stream);
+        Httpc httpc = new Httpc();
+        final JCommander httpcJc = httpc.getJc();
+
+        String[] argv = new String[]{"help", "get"};
+        httpcJc.parse(argv);
+        httpc.interpret().orElse(null);
+
+        assertTrue(stream.getInternalListString().size() > 0);
+        assertTrue(stream.getInternalListString().get(0).contains("usage: httpc get [-v] [-h key:value] URL"));
+
+    }
+
+    @Test
+    void TestHelpPost(){
+        TestablePrintStream stream = new TestablePrintStream();
+        Logger.setPrintStream(stream);
+        Httpc httpc = new Httpc();
+        final JCommander httpcJc = httpc.getJc();
+
+        String[] argv = new String[]{"help", "post"};
+        httpcJc.parse(argv);
+        httpc.interpret().orElse(null);
+
+        assertTrue(stream.getInternalListString().size() > 0);
+        assertTrue(stream.getInternalListString().get(0).contains("usage: httpc post [-v] [-h key:value] [-d inline-data] [-f file] URL"));
+
+    }
+
 
 
 }
