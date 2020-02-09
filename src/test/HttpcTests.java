@@ -21,9 +21,7 @@ public class HttpcTests {
 
         String[] argv = new String[]{"GET", "http://www.httpbin.org/"};
 
-        httpcJc.parse(argv);
-
-        final Response response = httpc.interpret().orElse(null);
+        final Response response = httpc.interpret(argv).orElse(null);
         assertNotNull(response);
         assertEquals(200, response.getStatus());
     }
@@ -38,9 +36,8 @@ public class HttpcTests {
 
         String[] argv = new String[]{"GET", "sasd..ww.httpbin.asdasd...org/"};
 
-        httpcJc.parse(argv);
 
-        final Response response = httpc.interpret().orElse(null);
+        final Response response = httpc.interpret(argv).orElse(null);
         assertNull(response);
         //assertTrue(testablePrintStream.getInternalListString().stream().anyMatch(s -> s.equals("[ERROR]: No such URL is known")));
 
@@ -53,9 +50,7 @@ public class HttpcTests {
 
         String[] argv = new String[]{"GET", "http://www.httpbin.org/status/418"};
 
-        httpcJc.parse(argv);
-
-        final Response response = httpc.interpret().orElse(null);
+        final Response response = httpc.interpret(argv).orElse(null);
         assertNotNull(response);
         assertEquals(418, response.getStatus());
         assertEquals("I'M A TEAPOT", response.getPhrase());
@@ -68,9 +63,8 @@ public class HttpcTests {
 
         String[] argv = new String[]{"POST", "http://www.httpbin.org/status/204"};
 
-        httpcJc.parse(argv);
 
-        final Response response = httpc.interpret().orElse(null);
+        final Response response = httpc.interpret(argv).orElse(null);
         assertNotNull(response);
         assertEquals(204, response.getStatus());
     }
@@ -84,9 +78,8 @@ public class HttpcTests {
 
         String[] argv = new String[]{"POST", "http://www.httpbin.org/anything" + query};
 
-        httpcJc.parse(argv);
 
-        final Response response = httpc.interpret().orElse(null);
+        final Response response = httpc.interpret(argv).orElse(null);
         assertNotNull(response);
         System.out.println(response.getBody());
         assertTrue(response.getBody().contains(query));
@@ -101,9 +94,7 @@ public class HttpcTests {
 
         String[] argv = new String[]{"POST", "http://www.httpbin.org/anything", "-d", data};
 
-        httpcJc.parse(argv);
-
-        final Response response = httpc.interpret().orElse(null);
+        final Response response = httpc.interpret(argv).orElse(null);
         assertNotNull(response);
         System.out.println(response.getBody());
         assertTrue(response.getBody().contains(data));
@@ -116,9 +107,7 @@ public class HttpcTests {
 
         String[] argv = new String[]{"POST", "http://www.httpbin.org/anything", "-f", "src/test/data.txt"};
 
-        httpcJc.parse(argv);
-
-        final Response response = httpc.interpret().orElse(null);
+        final Response response = httpc.interpret(argv).orElse(null);
         assertNotNull(response);
         System.out.println(response.getBody());
         assertEquals(200, response.getStatus());
@@ -137,9 +126,7 @@ public class HttpcTests {
 
         String[] argv = new String[]{"POST", "http://www.httpbin.org/anything", "-d", " data", "-f", "file" };
 
-        httpcJc.parse(argv);
-
-        final Response response = httpc.interpret().orElse(null);
+        final Response response = httpc.interpret(argv).orElse(null);
         assertNull(response);
 
     }
@@ -150,9 +137,8 @@ public class HttpcTests {
         final JCommander httpcJc = httpc.getJc();
 
         String[] argv = new String[]{"GET", "-v", "http://httpbin.org/absolute-redirect/" + Integer.toString(Request.MAXTRIES-1)};
-        httpcJc.parse(argv);
 
-        final Response response = httpc.interpret().orElse(null);
+        final Response response = httpc.interpret(argv).orElse(null);
         Logger.println(response.getHeaders().toString());
         assertNotNull(response);
         assertEquals(200, response.getStatus());
@@ -164,9 +150,8 @@ public class HttpcTests {
         final JCommander httpcJc = httpc.getJc();
 
         String[] argv = new String[]{"GET", "-v", "http://httpbin.org/absolute-redirect/" + Integer.toString(Request.MAXTRIES+1)};
-        httpcJc.parse(argv);
 
-        final Response response = httpc.interpret().orElse(null);
+        final Response response = httpc.interpret(argv).orElse(null);
         Logger.println(response.getHeaders().toString());
         assertNotNull(response);
         assertEquals(302, response.getStatus());
@@ -181,8 +166,7 @@ public class HttpcTests {
         final JCommander httpcJc = httpc.getJc();
 
         String[] argv = new String[]{"help"};
-        httpcJc.parse(argv);
-        httpc.interpret().orElse(null);
+        httpc.interpret(argv).orElse(null);
 
         assertTrue(stream.getInternalListString().size() > 0);
         assertTrue(stream.getInternalListString().get(0).contains("httpc is a curl-like application but supports HTTP protocol only."));
@@ -197,8 +181,7 @@ public class HttpcTests {
         final JCommander httpcJc = httpc.getJc();
 
         String[] argv = new String[]{"help", "get"};
-        httpcJc.parse(argv);
-        httpc.interpret().orElse(null);
+        httpc.interpret(argv).orElse(null);
 
         assertTrue(stream.getInternalListString().size() > 0);
         assertTrue(stream.getInternalListString().get(0).contains("usage: httpc get [-v] [-h key:value] URL"));
@@ -213,8 +196,7 @@ public class HttpcTests {
         final JCommander httpcJc = httpc.getJc();
 
         String[] argv = new String[]{"help", "post"};
-        httpcJc.parse(argv);
-        httpc.interpret().orElse(null);
+        httpc.interpret(argv).orElse(null);
 
         assertTrue(stream.getInternalListString().size() > 0);
         assertTrue(stream.getInternalListString().get(0).contains("usage: httpc post [-v] [-h key:value] [-d inline-data] [-f file] URL"));
