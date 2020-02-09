@@ -6,6 +6,11 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.*;
 
+
+/**
+ * Request object which can represent any
+ * http request. Specified by it's method, url, headers and body.
+ */
 public class Request {
 
     private Method method;
@@ -16,7 +21,7 @@ public class Request {
     private Headers headers;
     private String body;
 
-    public static final Integer MAXTRIES = 5;
+    public static final Integer MAXTRIES = 5; // Max tries for redirect as specified in HTTP 1.0 Redirection specification
 
     public Request(URI url, Method method, Headers headers, String body){
         this.setURL(url);
@@ -24,6 +29,7 @@ public class Request {
         this.body = body;
         this.headers = headers;
     }
+
 
     public Method getMethod() {
         return method;
@@ -49,6 +55,11 @@ public class Request {
         return body;
     }
 
+    /**
+     * Private setter for setting the URI of the location the lib
+     * is trying to access
+     * @param url
+     */
     private void setURL(URI url){
         this.path = url.getPath();
         if(url.getQuery() != null && !url.getQuery().isEmpty()){
@@ -61,6 +72,10 @@ public class Request {
         }
     }
 
+    /**
+     * Private getter to generate the first line in the http request.
+     * @return requestLine
+     */
     private StringBuilder getRequestLine(){
         StringBuilder sb = new StringBuilder();
         sb.append(method)
@@ -74,6 +89,10 @@ public class Request {
         return sb;
     }
 
+    /**
+     * Private getter to generate the the serialized request
+     * @return serializedRequest
+     */
     private String getSerialized(){
         StringBuilder sb = getRequestLine();
         sb.append(headers)
@@ -84,10 +103,10 @@ public class Request {
         return sb.toString();
     }
 
-    private void redirectTo(URI url){
-        this.setURL(url);
-    }
-
+    /**
+     * This method sends a single request and returns a single response (ie. this method does not support redirection)
+     * @return A single response object
+     */
     private Response sendIsolatedRequest() {
         Socket socket = null;
         Response response = null;
@@ -117,6 +136,12 @@ public class Request {
         return response;
     }
 
+    /**
+     * This public send method
+     * It supports redirection for Responses who's status code
+     * is in the 300 range.
+     * @return Resulting response object after MAXTRIES redirections
+     */
     public Response send(){
 
         Response response = this.sendIsolatedRequest();

@@ -5,6 +5,9 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
+/**
+ * Headers is a Map object that stores a series of key value pairs.
+ */
 public class Headers implements Map<String, String> {
 
     private Map<String, String> headers;

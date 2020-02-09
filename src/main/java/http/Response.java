@@ -3,6 +3,10 @@ package http;
 import java.io.BufferedReader;
 import java.util.Iterator;
 
+/**
+ * HTTP Response class. Public interface allows you get information
+ * about an HTTP request's response.
+ */
 public class Response {
 
     private String version;
