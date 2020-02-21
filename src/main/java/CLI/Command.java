@@ -2,7 +2,6 @@ package CLI;
 
 import com.beust.jcommander.Parameter;
 import http.Response;
-import logger.Logger;
 
 import java.net.MalformedURLException;
 import java.net.URI;
@@ -27,14 +26,15 @@ public abstract class Command {
 
     abstract Response run();
 
-    URI verifyUrl(String parameters){
-        URI url = null;
-//        if (!parameters.startsWith("http://")) {
-//            parameters = "http://" + parameters;
-//        }
+    URL verifyUrl(String parameters){
+        URL url = null;
+        if (!parameters.startsWith("http://")) {
+            if (parameters.startsWith("https://")) return null;
+            parameters = "http://" + parameters;
+        }
         try {
-            url = new URI(parameters);
-        } catch (URISyntaxException e) {
+            url = new URL(parameters);
+        } catch (MalformedURLException e) {
             throw new IllegalArgumentException("Given URL is not well formatted.");
         }
         return url;

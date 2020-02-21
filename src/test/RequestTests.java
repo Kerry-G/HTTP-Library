@@ -16,11 +16,11 @@ public class RequestTests {
 
     @Test
     void GetStatus200(){
-        URI url = null;
+        URL url = null;
         
         try {
-            url = new URI("http://httpbin.org/status/200");
-        } catch (URISyntaxException e) {
+            url = new URL("http://httpbin.org/status/200");
+        } catch ( MalformedURLException e) {
             e.printStackTrace();
         }
         
@@ -38,11 +38,11 @@ public class RequestTests {
 
     @Test
     void GetStatus202() {
-        URI url = null;
+        URL url = null;
 
         try {
-            url = new URI("http://httpbin.org/status/202");
-        } catch (URISyntaxException e) {
+            url = new URL("http://httpbin.org/status/202");
+        } catch (MalformedURLException e) {
             e.printStackTrace();
         }
 
@@ -56,10 +56,10 @@ public class RequestTests {
 
     @Test
     void PostStatus200()  {
-        URI url = null;
+        URL url = null;
         try {
-            url = new URI("http://httpbin.org/status/200");
-        } catch (URISyntaxException e) {
+            url = new URL("http://httpbin.org/status/200");
+        } catch ( MalformedURLException e) {
             assertNull(e);
         }
 

@@ -23,7 +23,7 @@ public class Request {
 
     public static final Integer MAXTRIES = 5; // Max tries for redirect as specified in HTTP 1.0 Redirection specification
 
-    public Request(URI url, Method method, Headers headers, String body){
+    public Request(URL url, Method method, Headers headers, String body){
         this.setURL(url);
         this.method = method;
         this.body = body;
@@ -60,7 +60,7 @@ public class Request {
      * is trying to access
      * @param url
      */
-    private void setURL(URI url){
+    private void setURL(URL url){
         this.path = url.getPath();
         if(url.getQuery() != null && !url.getQuery().isEmpty()){
             this.path  += "?" + url.getQuery();
@@ -111,6 +111,7 @@ public class Request {
         Socket socket = null;
         Response response = null;
         try {
+
             socket = new Socket(this.address, 80);
 
             OutputStreamWriter out = new OutputStreamWriter(socket.getOutputStream());
@@ -147,15 +148,15 @@ public class Request {
         Response response = this.sendIsolatedRequest();
         String location;
         Headers headers;
-        URI url;
+        URL url;
 
         Integer noTries = 0;
         while (response.getStatus() % 300 <= 99 && noTries < this.MAXTRIES){
             headers = response.getHeaders();
             location = headers.get("Location");
             try {
-                url = new URI(location);
-            } catch (URISyntaxException e) {
+                url = new URL(location);
+            } catch (MalformedURLException e) {
                 break;
             }
 

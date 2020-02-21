@@ -1,12 +1,9 @@
 package CLI;
 
 import com.beust.jcommander.JCommander;
-import http.Constants;
 import http.Response;
 import logger.Logger;
 
-import java.io.IOException;
-import java.util.Map;
 import java.util.Optional;
 
 public class Httpc {
@@ -37,6 +34,12 @@ public class Httpc {
                     return Optional.of(commandGet.run());
                 case POST:
                     return Optional.of(commandPost.run());
+                case PUT:
+                    break;
+                case HEAD:
+                    break;
+                case DELETE:
+                    break;
                 case HELP:
                     commandHelp.run();
                     return Optional.empty();

@@ -7,7 +7,7 @@ import java.net.URL;
  * Builder class that builds Request Objects
  */
 public class RequestBuilder {
-    private URI url;
+    private URL url;
     private Method method;
     private Headers headers;
     private String body;
@@ -20,7 +20,7 @@ public class RequestBuilder {
         this.body = "";
     }
 
-    public RequestBuilder setUrl(URI url) {
+    public RequestBuilder setUrl(URL url) {
         this.url = url;
         return this;
     }

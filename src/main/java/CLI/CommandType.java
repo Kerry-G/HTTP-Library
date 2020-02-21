@@ -6,7 +6,7 @@ public enum CommandType {
     PUT("PUT"),
     HEAD("HEAD"),
     DELETE("DELETE"),
-    HELP("help"),
+    HELP("HELP"),
     ;
 
     final String name;

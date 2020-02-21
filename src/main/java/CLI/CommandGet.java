@@ -1,15 +1,16 @@
 package CLI;
 
 import com.beust.jcommander.Parameter;
-import http.*;
+import http.Headers;
+import http.Method;
+import http.RequestBuilder;
+import http.Response;
 import logger.Logger;
 import logger.Verbosity;
 
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.PrintStream;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 

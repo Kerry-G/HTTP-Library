@@ -19,7 +19,7 @@ class Driver {
             return;
         }
 
-        httpc.interpret().ifPresent(response -> {
+        httpc.interpret(args).ifPresent(response -> {
             Logger.debug(
                     response.getVersion() + Constants.SPACE + response.getStatus() + Constants.SPACE + response.getPhrase());
             for (Map.Entry<String, String> header : response.getHeaders().entrySet()) {

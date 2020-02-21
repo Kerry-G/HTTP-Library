@@ -165,7 +165,7 @@ public class HttpcTests {
         Httpc httpc = new Httpc();
         final JCommander httpcJc = httpc.getJc();
 
-        String[] argv = new String[]{"help"};
+        String[] argv = new String[]{"HELP"};
         httpc.interpret(argv).orElse(null);
 
         assertTrue(stream.getInternalListString().size() > 0);
@@ -180,7 +180,7 @@ public class HttpcTests {
         Httpc httpc = new Httpc();
         final JCommander httpcJc = httpc.getJc();
 
-        String[] argv = new String[]{"help", "get"};
+        String[] argv = new String[]{"HELP", "get"};
         httpc.interpret(argv).orElse(null);
 
         assertTrue(stream.getInternalListString().size() > 0);
@@ -195,7 +195,7 @@ public class HttpcTests {
         Httpc httpc = new Httpc();
         final JCommander httpcJc = httpc.getJc();
 
-        String[] argv = new String[]{"help", "post"};
+        String[] argv = new String[]{"HELP", "post"};
         httpc.interpret(argv).orElse(null);
 
         assertTrue(stream.getInternalListString().size() > 0);
