@@ -10,6 +10,13 @@ public class ResponseBuilder {
     private Headers headers;
     private String body;
 
+    public ResponseBuilder(){
+        this.headers = new Headers();
+        this.version = "HTTP/1.0";
+        this.phrase = "";
+        this.status = null;
+        this.body = "";
+    }
     public ResponseBuilder setVersion(String version) {
         this.version = version;
         return this;
