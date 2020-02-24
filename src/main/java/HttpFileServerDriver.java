@@ -18,7 +18,7 @@ import java.util.Map;
  */
 class HttpFileServerDriver {
     public static void main(String[] args) {
-        Server server = new Server();
+        Server server = new Server( 8080, "./");
         server.initialize();
     }
 }

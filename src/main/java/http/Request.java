@@ -13,7 +13,7 @@ import java.util.StringJoiner;
  * Request object which can represent any
  * http request. Specified by it's method, url, headers and body.
  */
-public class Request {
+public class Request implements HttpSerialize {
 
     private Method method;
     private String version = "HTTP/1.0";
@@ -102,7 +102,7 @@ public class Request {
      * Private getter to generate the the serialized request
      * @return serializedRequest
      */
-    private String getSerialized(){
+    public String getSerialized(){
         StringBuilder sb = getRequestLine();
         sb.append(headers)
           .append(Constants.CARRIAGE)

@@ -1,5 +1,7 @@
 package http;
 
+import httpFileServer.FileServerHandler;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -9,10 +11,12 @@ import java.net.Socket;
 public class ServiceThread extends Thread {
 
     private Socket socket;
+    private String directoryPath;
 
 
-    public ServiceThread(Socket clientSocket) {
+    public ServiceThread(Socket clientSocket, String directoryPath) {
         this.socket = clientSocket;
+        this.directoryPath = directoryPath;
     }
 
     @Override
@@ -24,8 +28,21 @@ public class ServiceThread extends Thread {
             out = new OutputStreamWriter(socket.getOutputStream());
             in = new BufferedReader (new InputStreamReader(socket.getInputStream()));
 
-            final Request request = Request.fromBufferedReader(in);
 
+            /*
+            Get the request from the buffered reader, create a handler and get the appropriate response
+             */
+            final Request request = Request.fromBufferedReader(in);
+            RequestHandler handler = new FileServerHandler(this.directoryPath);
+            Response response = handler.handleRequest(request);
+
+
+            String serialized = response.getSerialized();
+            out.write(serialized);
+            out.flush();
+            out.close();
+            in.close();
+            socket.close();
         } catch (IOException e) {
             e.printStackTrace();
         }

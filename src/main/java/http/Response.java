@@ -7,7 +7,7 @@ import java.util.Iterator;
  * HTTP Response class. Public interface allows you get information
  * about an HTTP request's response.
  */
-public class Response {
+public class Response implements HttpSerialize {
 
     private String version;
     private String phrase;
@@ -21,6 +21,23 @@ public class Response {
         this.status = status;
         this.headers = headers;
         this.body = body;
+    }
+
+    public String getSerialized(){
+        StringBuilder sb = new StringBuilder();
+        sb
+                .append(getVersion())
+                .append(Constants.SPACE)
+                .append(getStatus())
+                .append(Constants.SPACE)
+                .append(getPhrase())
+                .append(Constants.CARRIAGE)
+                .append(Constants.NEW_LINE)
+                .append(headers)
+                .append(Constants.CARRIAGE)
+                .append(Constants.NEW_LINE)
+                .append(getBody());
+        return sb.toString();
     }
 
     public String getVersion() {

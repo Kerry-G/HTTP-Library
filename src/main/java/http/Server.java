@@ -6,15 +6,21 @@ import java.net.Socket;
 
 public class Server {
 
-    Short port;
+    Integer port = 8080;
+    String directoryPath = "./";
     Boolean serverOn = true;
 
-    public Server(short port){
+    public Server(int port){
         this.port = port;
     }
 
-    public Server(){
-        this.port = 8080;
+    public Server(String directoryPath){
+        this.directoryPath = directoryPath;
+    }
+
+    public Server(int port, String directoryPath){
+        this.port = port;
+        this.directoryPath = directoryPath;
     }
 
     public void close(){
@@ -27,7 +33,7 @@ public class Server {
 
             while (serverOn){
                 Socket clientSocket = server.accept();
-                ServiceThread serviceThread = new ServiceThread(clientSocket);
+                ServiceThread serviceThread = new ServiceThread(clientSocket, directoryPath);
                 serviceThread.start();
             }
         } catch (IOException e) {
