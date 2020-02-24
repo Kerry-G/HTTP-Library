@@ -2,6 +2,7 @@ package httpFileServer;
 
 import com.beust.jcommander.JCommander;
 import http.Response;
+import http.Server;
 import httpClient.CommandGet;
 import httpClient.CommandType;
 import logger.Logger;

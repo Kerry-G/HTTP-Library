@@ -30,6 +30,11 @@ public class Request {
         this.headers = headers;
     }
 
+    public static Request fromBufferedReader(BufferedReader in) throws IOException {
+        System.out.println(in.readLine());
+        return null;
+    }
+
 
     public Method getMethod() {
         return method;
