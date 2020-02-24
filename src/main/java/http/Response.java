@@ -37,6 +37,7 @@ public class Response implements HttpSerialize {
                 .append(Constants.CARRIAGE)
                 .append(Constants.NEW_LINE)
                 .append(getBody());
+
         return sb.toString();
     }
 

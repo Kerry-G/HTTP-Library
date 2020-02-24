@@ -26,7 +26,7 @@ public class FileServerHandler implements RequestHandler {
             String path = request.getPath();
             switch (request.getMethod()) {
                 case GET:
-                    if (path == "/") {
+                    if (path.equals("/")) {
                         Stream<Path> walk = Files.walk(Paths.get(directoryPath));
                         String files = walk
                                 .filter(Files::isRegularFile)

@@ -38,7 +38,10 @@ public class ServiceThread extends Thread {
 
 
             String serialized = response.getSerialized();
-            out.write(serialized);
+
+            //out.write(serialized);
+            System.out.println(serialized);
+            out.write("hello");
             out.flush();
             out.close();
             in.close();
