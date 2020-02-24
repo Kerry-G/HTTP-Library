@@ -5,6 +5,8 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.*;
+import java.util.Iterator;
+import java.util.StringJoiner;
 
 
 /**
@@ -30,11 +32,13 @@ public class Request {
         this.headers = headers;
     }
 
-    public static Request fromBufferedReader(BufferedReader in) throws IOException {
-        System.out.println(in.readLine());
-        return null;
+    public Request(URL url, Method method, Headers headers, String body, String version) {
+        this.setURL(url);
+        this.method = method;
+        this.body = body;
+        this.headers = headers;
+        this.version = version;
     }
-
 
     public Method getMethod() {
         return method;
@@ -173,4 +177,51 @@ public class Request {
         return response;
     }
 
+
+    public static Request fromBufferedReader(BufferedReader in) throws IOException {
+        RequestBuilder rb = new RequestBuilder();
+        Headers headers = new Headers();
+        boolean firstLine = true;
+        boolean iteratorReachedBody = false;
+        boolean done = false;
+        StringBuilder body = new StringBuilder();
+        Method method = null;
+
+        Iterator<String> iterator = in.lines().iterator();
+        while(!done) {
+            String line = iterator.next();
+            System.out.println(line);
+            if (firstLine) {
+                firstLine = false;
+                final String[] split = line.split(" ");
+                method = Method.valueOf(split[0]);
+                rb.setMethod(method)
+                  .setUrl(new URL( "http://www.foo.com" + split[1]))
+                  .setVersion(split[2]);
+            } else if( line.isEmpty() ) {
+                if(iteratorReachedBody || method == Method.GET) done = true;
+                iteratorReachedBody = true;
+            }  else if(iteratorReachedBody){
+                body.append(line).append(Constants.NEW_LINE); // Adding a /n so it's matches what we originally receive
+            } else {
+                String[] split = line.split(":");
+                headers.put(split[0], line.replace(split[0], "").replace(": ", ""));
+            }
+        }
+
+        return rb.setHeaders(headers)
+                 .setBody(body.toString())
+                 .createRequest();
+        }
+
+
+    @Override public String toString() {
+        return new StringJoiner(", ", Request.class.getSimpleName() + "[", "]").add("method=" + method)
+                                                                               .add("version='" + version + "'")
+                                                                               .add("address=" + address)
+                                                                               .add("path='" + path + "'")
+                                                                               .add("headers=" + headers)
+                                                                               .add("body='" + body + "'")
+                                                                               .toString();
+    }
 }

@@ -24,7 +24,8 @@ public class ServiceThread extends Thread {
             out = new OutputStreamWriter(socket.getOutputStream());
             in = new BufferedReader (new InputStreamReader(socket.getInputStream()));
 
-            Request.fromBufferedReader(in);
+            final Request request = Request.fromBufferedReader(in);
+
         } catch (IOException e) {
             e.printStackTrace();
         }

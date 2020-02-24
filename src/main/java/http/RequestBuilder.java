@@ -11,6 +11,7 @@ public class RequestBuilder {
     private Method method;
     private Headers headers;
     private String body;
+    private String version;
 
 
     public RequestBuilder(){
@@ -18,6 +19,7 @@ public class RequestBuilder {
         this.method = null;
         this.headers = new Headers();
         this.body = "";
+        this.version = "HTTP/1.0";
     }
 
     public RequestBuilder setUrl(URL url) {
@@ -45,7 +47,12 @@ public class RequestBuilder {
         return this;
     }
 
+    public RequestBuilder setVersion(String version){
+        this.version = version;
+        return this;
+    }
+
     public Request createRequest()  {
-        return new Request(url, method, headers, body);
+        return new Request(url, method, headers, body, version);
     }
 }

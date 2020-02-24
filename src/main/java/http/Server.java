@@ -24,7 +24,7 @@ public class Server {
     public void initialize(){
         try {
             ServerSocket server = new ServerSocket(port);
-            //System.out.println("Server Started: " + server.getInetAddress().toString() + ":" + server.getLocalPort());
+
             while (serverOn){
                 Socket clientSocket = server.accept();
                 ServiceThread serviceThread = new ServiceThread(clientSocket);
