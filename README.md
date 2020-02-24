@@ -11,7 +11,7 @@ HTTP Library Java Implementation with cURL-like Command Line.
 
 ## Build
 
-Use `mvn package` to create a .jar in /target. The executable class is Driver. 
+Use `mvn package` to create a .jar in /target. The executable class is HttpClientDriver. 
 
 ```
 mvn package

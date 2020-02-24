@@ -1,14 +1,9 @@
-import CLI.Httpc;
+import httpClient.Httpc;
 import com.beust.jcommander.JCommander;
 import http.Request;
 import http.Response;
 import logger.Logger;
-import org.junit.Ignore;
 import org.junit.jupiter.api.Test;
-
-import java.io.*;
-import java.net.URL;
-import java.util.Arrays;
 
 import static org.junit.jupiter.api.Assertions.*;
 

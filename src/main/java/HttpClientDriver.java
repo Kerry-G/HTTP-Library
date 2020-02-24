@@ -1,4 +1,4 @@
-import CLI.Httpc;
+import httpClient.Httpc;
 import com.beust.jcommander.JCommander;
 import http.Constants;
 import logger.Logger;
@@ -10,9 +10,10 @@ import java.util.Map;
  *
  * @author Kerry Gougeon Ducharme (40028722) and Jonathan Mongeau (40006501)
  */
-class Driver {
+class HttpClientDriver {
     public static void main(String[] args) {
         Httpc httpc = new Httpc();
+
         JCommander jc = httpc.getJc();
         if (args.length == 0) {
             jc.usage();

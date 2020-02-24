@@ -1,6 +1,6 @@
 #!/bin/bash
 
-DIR="$(dirname "$0")/httpc.jar-jar-with-dependencies.jar"
+DIR="$(dirname "$0")/httpfs.jar-jar-with-dependencies.jar"
 java -jar "$DIR" "$@"
 echo "Press any key to continue"
 while [ true ] ; do

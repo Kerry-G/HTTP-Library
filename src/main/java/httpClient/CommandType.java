@@ -1,4 +1,4 @@
-package CLI;
+package httpClient;
 
 public enum CommandType {
     GET("GET"),

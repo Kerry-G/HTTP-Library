@@ -1,4 +1,4 @@
-package CLI;
+package httpClient;
 
 import com.beust.jcommander.JCommander;
 import http.Response;

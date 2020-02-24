@@ -1,4 +1,4 @@
-package CLI;
+package httpClient;
 
 import com.beust.jcommander.Parameter;
 import http.Headers;

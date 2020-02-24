@@ -1,4 +1,4 @@
-package CLI;
+package httpClient;
 
 import http.Response;
 import logger.Logger;

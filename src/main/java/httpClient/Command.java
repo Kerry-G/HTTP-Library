@@ -1,11 +1,9 @@
-package CLI;
+package httpClient;
 
 import com.beust.jcommander.Parameter;
 import http.Response;
 
 import java.net.MalformedURLException;
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.net.URL;
 
 /**
