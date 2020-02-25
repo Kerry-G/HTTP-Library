@@ -58,9 +58,8 @@ public class FileServerHandler implements RequestHandler {
                     } else {
                         path = path.replace("/","");
                         Path filePath = Paths.get(path);
-                        if (Files.isRegularFile(filePath)){
-                            Files.readAllBytes(filePath);
-                            String content = new String();
+                        if (Files.isReadable(filePath)){
+                            String content = new String(Files.readAllBytes(filePath));
                             response = responseBuilder
                                     .setBody(content)
                                     .setStatus(200)
