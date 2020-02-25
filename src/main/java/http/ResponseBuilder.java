@@ -37,8 +37,14 @@ public class ResponseBuilder {
         return this;
     }
 
+    public ResponseBuilder addHeader(String key, String value){
+        this.headers.put(key, value);
+        return this;
+    }
+
     public ResponseBuilder setBody(String body) {
         this.body = body;
+        this.headers.put("Content-Length", new Integer(this.body.length()).toString());
         return this;
     }
 

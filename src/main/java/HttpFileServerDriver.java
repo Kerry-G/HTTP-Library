@@ -1,15 +1,4 @@
 import http.Server;
-import httpClient.Httpc;
-import com.beust.jcommander.JCommander;
-import http.Constants;
-import httpFileServer.Httpfs;
-import logger.Logger;
-
-import java.io.IOException;
-import java.net.InetAddress;
-import java.net.ServerSocket;
-import java.net.Socket;
-import java.util.Map;
 
 /**
  * Starting class of the HTTP Library project
