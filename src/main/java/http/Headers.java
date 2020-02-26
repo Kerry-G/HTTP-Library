@@ -40,8 +40,11 @@ public class Headers implements Map<String, String> {
         return headers.get(o);
     }
 
+    public String get(String s){
+        return get((Object) s.toLowerCase());
+    }
     @Override public String put(String key, String value) {
-        return headers.put(key, value);
+        return headers.put(key.toLowerCase(), value);
     }
 
     @Override public String remove(Object o) {

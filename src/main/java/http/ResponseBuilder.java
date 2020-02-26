@@ -44,7 +44,7 @@ public class ResponseBuilder {
 
     public ResponseBuilder setBody(String body) {
         this.body = body;
-        this.headers.put("Content-Length", new Integer(this.body.length()).toString());
+        this.headers.put("Content-Length", Integer.toString(this.body.length()));
         return this;
     }
 
