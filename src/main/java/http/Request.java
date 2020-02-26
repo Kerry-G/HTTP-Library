@@ -197,7 +197,6 @@ public class Request implements HttpSerialize {
             System.out.println(line);
             if (firstLine) {
                 // this happens at first line
-                System.out.println("First Line");
                 firstLine = false;
                 final String[] split = line.split(" ");
                 method = Method.valueOf(split[0]);
@@ -205,16 +204,13 @@ public class Request implements HttpSerialize {
                   .setUrl(new URL( "http://www.foo.com" + split[1]))
                   .setVersion(split[2]);
             } else if( line.isEmpty() ) {
-                System.out.println("Line is empty");
                 // Empty line therefore done, process body (GET) will skip over this
                 done = true;
                 int contentLength = Integer.parseInt(headers.get("Content-Length"));
-                int i = 0;
                 int r;
-                while ((r = in.read()) != -1) {
-                    i++;
+                for (int i=0; i<contentLength; i++){
+                    r = in.read();
                     body.append((char) r);
-                    if (i == contentLength) break;
                 }
             }  else {
                 // Process headers
