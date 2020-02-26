@@ -5,7 +5,9 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.*;
+import java.util.Arrays;
 import java.util.Iterator;
+import java.util.List;
 import java.util.StringJoiner;
 
 
@@ -184,14 +186,18 @@ public class Request implements HttpSerialize {
         boolean firstLine = true;
         boolean iteratorReachedBody = false;
         boolean done = false;
-        StringBuilder body = new StringBuilder();
         Method method = null;
+        StringBuilder body = new StringBuilder();
+        String line;
 
         Iterator<String> iterator = in.lines().iterator();
+
         while(!done) {
-            String line = iterator.next();
+            line = iterator.next();
             System.out.println(line);
             if (firstLine) {
+                // this happens at first line
+                System.out.println("First Line");
                 firstLine = false;
                 final String[] split = line.split(" ");
                 method = Method.valueOf(split[0]);
@@ -199,11 +205,19 @@ public class Request implements HttpSerialize {
                   .setUrl(new URL( "http://www.foo.com" + split[1]))
                   .setVersion(split[2]);
             } else if( line.isEmpty() ) {
-                if(iteratorReachedBody || method == Method.GET) done = true;
-                iteratorReachedBody = true;
-            }  else if(iteratorReachedBody){
-                body.append(line).append(Constants.NEW_LINE); // Adding a /n so it's matches what we originally receive
-            } else {
+                System.out.println("Line is empty");
+                // Empty line therefore done, process body (GET) will skip over this
+                done = true;
+                int contentLength = Integer.parseInt(headers.get("Content-Length"));
+                int i = 0;
+                int r;
+                while ((r = in.read()) != -1) {
+                    i++;
+                    body.append((char) r);
+                    if (i == contentLength) break;
+                }
+            }  else {
+                // Process headers
                 String[] split = line.split(":");
                 headers.put(split[0], line.replace(split[0], "").replace(": ", ""));
             }
