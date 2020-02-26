@@ -206,7 +206,7 @@ public class Request implements HttpSerialize {
             } else if( line.isEmpty() ) {
                 // Empty line therefore done, process body (GET) will skip over this
                 done = true;
-                int contentLength = Integer.parseInt(headers.get("Content-Length"));
+                int contentLength = Integer.parseInt(headers.get("content-length"));
                 int r;
                 for (int i=0; i<contentLength; i++){
                     r = in.read();
