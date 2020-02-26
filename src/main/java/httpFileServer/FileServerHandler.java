@@ -93,7 +93,7 @@ public class FileServerHandler implements RequestHandler {
                     } else {
                         path = path.replace("/", "");
                         Path filePath = Paths.get(path);
-                        if (Files.isRegularFile(filePath)) {
+                        if (Files.isReadable(filePath)) {
                             Files.write(filePath, request.getBody().getBytes());
                             response = responseBuilder
                                     .setBody(request.getBody())
