@@ -1,6 +1,7 @@
 package http;
 
 import httpFileServer.FileServerHandler;
+import logger.Logger;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -38,7 +39,7 @@ public class ServiceThread extends Thread {
 
 
             String serialized = response.getSerialized();
-
+            Logger.debug(serialized);
             out.write(serialized);
             out.flush();
             out.close();
