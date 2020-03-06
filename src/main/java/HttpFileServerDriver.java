@@ -1,4 +1,6 @@
+import com.beust.jcommander.JCommander;
 import http.Server;
+import httpFileServer.Httpfs;
 
 /**
  * Starting class of the HTTP Library project
@@ -7,7 +9,10 @@ import http.Server;
  */
 class HttpFileServerDriver {
     public static void main(String[] args) {
-        Server server = new Server( 8080, "./");
-        server.initialize();
+        Httpfs httpfs = new Httpfs();
+
+
+        httpfs.interpret(args);
+
     }
 }

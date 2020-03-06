@@ -4,26 +4,31 @@ import com.beust.jcommander.JCommander;
 import http.Response;
 import http.Server;
 import httpClient.CommandGet;
-import httpClient.CommandType;
-import logger.Logger;
 
 import java.util.Optional;
 
 public class Httpfs {
 
     private JCommander jc;
-
-    CommandGet commandGet;
+    Arguments arguments;
 
     public Httpfs(){
-        commandGet = new CommandGet();
+        arguments = new Arguments();
         jc = JCommander.newBuilder()
-                       .addCommand(CommandType.GET.toString(), commandGet)
+                       .addObject(arguments)
                        .build();
+
         jc.setProgramName("Httpfs");
     }
 
     public Optional<Response> interpret(String ...args){
+        try {
+            jc.parse(args);
+            arguments.run(jc);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
         return Optional.empty();
     }
 
