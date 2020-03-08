@@ -1,6 +1,7 @@
 package logger;
 
 import java.io.PrintStream;
+import java.util.Arrays;
 
 /**
  * Centralization of the logging systems.
@@ -32,7 +33,7 @@ public final class Logger {
     }
     public static void debug(String s){
         if(verbosity.equals(Verbosity.Debug))  {
-            s.lines().forEach(x-> internalPrintLn("[DEBUG - TID:" + Thread.currentThread().getId() + "]: " + x));
+            Arrays.stream(s.split("\\r?\\n")).forEach(x-> internalPrintLn("[DEBUG - TID:" + Thread.currentThread().getId() + "]: " + x));
         }
     }
     public static void error(String s){
