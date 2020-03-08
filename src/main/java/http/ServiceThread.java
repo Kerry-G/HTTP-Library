@@ -34,11 +34,14 @@ public class ServiceThread extends Thread {
             Get the request from the buffered reader, create a handler and get the appropriate response
              */
             final Request request = Request.fromBufferedReader(in);
+            Logger.debug(" === Request object === ");
+            Logger.debug(request.toString());
             RequestHandler handler = new FileServerHandler(this.directoryPath);
             Response response = handler.handleRequest(request);
-
-
+            Logger.debug(" === Response Object === ");
+            Logger.debug(response.toString());
             String serialized = response.getSerialized();
+            Logger.debug(" === Serialized response === ");
             Logger.debug(serialized);
             out.write(serialized);
             out.flush();

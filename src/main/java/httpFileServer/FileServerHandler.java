@@ -53,18 +53,7 @@ public class FileServerHandler implements RequestHandler {
             switch (request.getMethod()) {
                 case GET:
                     if (path.equals("/")) {
-                        Stream<Path> list = Files.list(Paths.get(directoryPath));
-                        String files = list
-                                .filter(Files::isRegularFile)
-                                .map(x -> x.toString())
-                                .reduce((x,y) -> x+"\n"+y).orElse("");
-
-                        response = responseBuilder
-                                .setBody(files)
-                                .setStatus(200)
-                                .setPhrase("OK")
-                                .setVersion("HTTP/1.0")
-                                .createResponse();
+                        response = getResponse(responseBuilder);
                     } else {
                         path = path.replace("/","");
                         Path filePath = Paths.get(path);
@@ -78,7 +67,7 @@ public class FileServerHandler implements RequestHandler {
                                     .createResponse();
                         } else {
                             response = responseBuilder
-                                    .setBody("")
+                                    .setBody(filePath + " does not exists on server")
                                     .setStatus(404)
                                     .setPhrase("Not Found")
                                     .setVersion("HTTP/1.0")
@@ -88,18 +77,7 @@ public class FileServerHandler implements RequestHandler {
                     break;
                 case POST:
                     if (path.equals("/")) {
-                        Stream<Path> list = Files.list(Paths.get(directoryPath));
-                        String files = list
-                                .filter(Files::isRegularFile)
-                                .map(x -> x.toString())
-                                .reduce((x,y) -> x+"\n"+y).orElse("");
-
-                        response = responseBuilder
-                                .setBody(files)
-                                .setStatus(200)
-                                .setPhrase("OK")
-                                .setVersion("HTTP/1.0")
-                                .createResponse();
+                        response = getResponse(responseBuilder);
                     } else {
                         path = path.substring(1);
                         Path filePath = Paths.get(path);
@@ -125,9 +103,26 @@ public class FileServerHandler implements RequestHandler {
                     .setVersion("HTTP/1.0")
                     .setStatus(500)
                     .setPhrase("Internal Server Error")
-                    .setBody("")
+                    .setBody(e.getMessage())
                     .createResponse();
         }
+        return response;
+    }
+
+    private Response getResponse(ResponseBuilder responseBuilder) throws IOException {
+        Response response;
+        Stream<Path> list = Files.list(Paths.get(directoryPath));
+        String files = list
+                .filter(Files::isRegularFile)
+                .map(x -> x.toString())
+                .reduce((x,y) -> x+"\n"+y).orElse("");
+
+        response = responseBuilder
+                .setBody(files)
+                .setStatus(200)
+                .setPhrase("OK")
+                .setVersion("HTTP/1.0")
+                .createResponse();
         return response;
     }
 }

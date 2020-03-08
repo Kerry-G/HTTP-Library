@@ -2,6 +2,7 @@ package http;
 
 import java.io.BufferedReader;
 import java.util.Iterator;
+import java.util.StringJoiner;
 
 /**
  * HTTP Response class. Public interface allows you get information
@@ -59,6 +60,15 @@ public class Response implements HttpSerialize {
 
     public String getBody() {
         return body;
+    }
+
+    @Override public String toString() {
+        return new StringJoiner(", ", Response.class.getSimpleName() + "[", "]").add("version='" + version + "'")
+                                                                                .add("phrase='" + phrase + "'")
+                                                                                .add("status=" + status)
+                                                                                .add("headers=" + headers)
+                                                                                .add("body='" + body + "'")
+                                                                                .toString();
     }
 
     /**
