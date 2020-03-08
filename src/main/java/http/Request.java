@@ -1,5 +1,7 @@
 package http;
 
+import logger.Logger;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -118,12 +120,12 @@ public class Request implements HttpSerialize {
      * This method sends a single request and returns a single response (ie. this method does not support redirection)
      * @return A single response object
      */
-    private Response sendIsolatedRequest() {
+    private Response sendIsolatedRequest(int port) {
         Socket socket = null;
         Response response = null;
         try {
-
-            socket = new Socket(this.address, 80);
+            Logger.debug("Creating socket at port " + port + " with address: " + this.address.getHostAddress());
+            socket = new Socket(this.address.getHostAddress(), port);
 
             OutputStreamWriter out = new OutputStreamWriter(socket.getOutputStream());
             BufferedReader in = new BufferedReader (new InputStreamReader(socket.getInputStream()));
@@ -143,6 +145,7 @@ public class Request implements HttpSerialize {
             socket.close();
 
         } catch (IOException e) {
+            Logger.debug(e.getMessage());
             throw new IllegalArgumentException("Can't establish an connection.");
         }
         return response;
@@ -154,9 +157,9 @@ public class Request implements HttpSerialize {
      * is in the 300 range.
      * @return Resulting response object after MAXTRIES redirections
      */
-    public Response send(){
+    public Response send(int port){
 
-        Response response = this.sendIsolatedRequest();
+        Response response = this.sendIsolatedRequest(port);
         String location;
         Headers headers;
         URL url;
@@ -168,12 +171,13 @@ public class Request implements HttpSerialize {
             try {
                 url = new URL(location);
             } catch (MalformedURLException e) {
+                Logger.debug(e.getMessage());
                 break;
             }
 
             this.setURL(url);
 
-            response = this.sendIsolatedRequest();
+            response = this.sendIsolatedRequest(port);
             noTries++;
         }
         return response;
@@ -194,7 +198,6 @@ public class Request implements HttpSerialize {
 
         while(!done) {
             line = iterator.next();
-            System.out.println(line);
             if (firstLine) {
                 // this happens at first line
                 firstLine = false;
@@ -206,7 +209,7 @@ public class Request implements HttpSerialize {
             } else if( line.isEmpty() ) {
                 // Empty line therefore done, process body (GET) will skip over this
                 done = true;
-                if(method == Method.GET) continue;
+                if(method == Method.GET) break;
                 int contentLength = Integer.parseInt(headers.get("content-length"));
                 int r;
                 for (int i=0; i<contentLength; i++){

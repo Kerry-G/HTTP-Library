@@ -31,7 +31,7 @@ public class RequestTests {
                     .createRequest();
 
         
-        Response response = request.send();
+        Response response = request.send(80);
 
         assertEquals(200,response.getStatus(),"Status should be 200");
     }
@@ -49,7 +49,7 @@ public class RequestTests {
         Request request = null;
         request = new RequestBuilder().setUrl(url).setMethod(Method.GET).createRequest();
 
-        Response send = request.send();
+        Response send = request.send(80);
 
         assertEquals(202,send.getStatus(),"Status should be 200");
     }
@@ -69,7 +69,7 @@ public class RequestTests {
                 .addHeader("accept", "application/json")
                 .setBody("")
                 .createRequest();
-        Response response = request.send();
+        Response response = request.send(80);
 
         assertEquals(200, response.getStatus());
 

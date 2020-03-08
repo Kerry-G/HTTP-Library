@@ -51,6 +51,6 @@ public class CommandGet extends Command{
                 .setMethod(Method.GET)
                 .setHeaders(headers)
                 .createRequest()
-                .send();
+                .send(port);
     }
 }

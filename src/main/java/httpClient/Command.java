@@ -2,6 +2,7 @@ package httpClient;
 
 import com.beust.jcommander.Parameter;
 import http.Response;
+import logger.Logger;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -18,6 +19,9 @@ public abstract class Command {
     @Parameter
     protected String parameters;
 
+    @Parameter(names={"--port", "-p"}, description= "Port")
+    protected Integer port = 80;
+
     @Override public String toString() {
         return "Command{" + "parameters=" + parameters + '}';
     }
@@ -30,6 +34,7 @@ public abstract class Command {
             if (parameters.startsWith("https://")) return null;
             parameters = "http://" + parameters;
         }
+        Logger.debug("URL given is: " + parameters);
         try {
             url = new URL(parameters);
         } catch (MalformedURLException e) {

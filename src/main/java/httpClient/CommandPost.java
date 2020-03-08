@@ -73,6 +73,6 @@ public class CommandPost extends Command {
                 .setHeaders(headers)
                 .setBody(body)
                 .createRequest()
-                .send();
+                .send(port);
     }
 }
