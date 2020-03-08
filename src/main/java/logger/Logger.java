@@ -31,7 +31,9 @@ public final class Logger {
         internalPrintLn(s);
     }
     public static void debug(String s){
-        if(verbosity.equals(Verbosity.Debug))  internalPrintLn("[DEBUG]: " + s);
+        if(verbosity.equals(Verbosity.Debug))  {
+            s.lines().forEach(x-> internalPrintLn("[DEBUG - TID:" + Thread.currentThread().getId() + "]: " + x));
+        }
     }
     public static void error(String s){
         internalPrintLn("[ERROR]: " + s);

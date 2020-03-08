@@ -1,5 +1,7 @@
 package http;
 
+import logger.Logger;
+
 import java.net.URL;
 
 /**
@@ -52,6 +54,7 @@ public class RequestBuilder {
     }
 
     public Request createRequest()  {
+        Logger.debug("Creating a request with info {url: " + url + ", method: " + method + ",body: " + body + ", version: " + version + "}" );
         return new Request(url, method, headers, body, version);
     }
 }

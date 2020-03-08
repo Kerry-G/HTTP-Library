@@ -48,8 +48,15 @@ public class ServiceThread extends Thread {
             out.close();
             in.close();
             socket.close();
-        } catch (IOException e) {
-            e.printStackTrace();
+        } catch(Exception e){
+            ResponseBuilder responseBuilder = new ResponseBuilder();
+            responseBuilder
+                    .setVersion("HTTP/1.0")
+                    .setStatus(500)
+                    .setPhrase("Internal Server Error")
+                    .setBody(e.getMessage())
+                    .createResponse();
+
         }
     }
 }

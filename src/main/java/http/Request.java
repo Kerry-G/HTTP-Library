@@ -184,7 +184,7 @@ public class Request implements HttpSerialize {
     }
 
 
-    public static Request fromBufferedReader(BufferedReader in) throws IOException {
+    public static Request fromBufferedReader(BufferedReader in) throws IOException, RuntimeException {
         RequestBuilder rb = new RequestBuilder();
         Headers headers = new Headers();
         boolean firstLine = true;
@@ -192,12 +192,16 @@ public class Request implements HttpSerialize {
         boolean done = false;
         Method method = null;
         StringBuilder body = new StringBuilder();
-        String line;
+        String line = null;
 
         Iterator<String> iterator = in.lines().iterator();
 
         while(!done) {
-            line = iterator.next();
+            try {
+                line = iterator.next();
+            } catch (Throwable e){
+                throw new RuntimeException("Request not well defined.");
+            }
             if (firstLine) {
                 // this happens at first line
                 firstLine = false;
