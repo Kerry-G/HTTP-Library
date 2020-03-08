@@ -7,7 +7,9 @@ pip install requests
 
 # Make request
 def make_request(name):
+    print("Starting up a thread and making a request: " + str(name))
     response = requests.post('http://localhost:8080/data/'+ str(name) + '.txt', str(name))
+    print("Ending a thread and receiving a response: " + str(name))
     return response
 
 if __name__ == '__main__':
