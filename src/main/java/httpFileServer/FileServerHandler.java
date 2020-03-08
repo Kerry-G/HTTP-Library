@@ -40,6 +40,15 @@ public class FileServerHandler implements RequestHandler {
 
         try {
             String path = request.getPath();
+            if (path.contains("../")){
+                response = responseBuilder
+                        .setBody("Invalid path (cannot contain ../)")
+                        .setPhrase("Bad Request")
+                        .setVersion("HTTP/1.0")
+                        .setStatus(400)
+                        .createResponse();
+                return response;
+            }
             switch (request.getMethod()) {
                 case GET:
                     if (path.equals("/")) {
@@ -91,24 +100,16 @@ public class FileServerHandler implements RequestHandler {
                                 .setVersion("HTTP/1.0")
                                 .createResponse();
                     } else {
-                        path = path.replace("/", "");
+                        path = path.substring(1);
                         Path filePath = Paths.get(path);
-                        if (Files.isReadable(filePath)) {
-                            Files.write(filePath, request.getBody().getBytes());
-                            response = responseBuilder
+                        Files.write(filePath, request.getBody().getBytes());
+                        response = responseBuilder
                                     .setBody(request.getBody())
                                     .setStatus(200)
                                     .setPhrase("OK")
                                     .setVersion("HTTP/1.0")
                                     .createResponse();
-                        } else {
-                            response = responseBuilder
-                                    .setBody("")
-                                    .setStatus(404)
-                                    .setPhrase("Not Found")
-                                    .setVersion("HTTP/1.0")
-                                    .createResponse();
-                        }
+
                     }
                     break;
                 case PUT:
