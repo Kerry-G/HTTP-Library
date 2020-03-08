@@ -1,5 +1,6 @@
 package http;
 
+
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -34,6 +35,7 @@ public class Server {
             while (serverOn){
                 Socket clientSocket = server.accept();
                 ServiceThread serviceThread = new ServiceThread(clientSocket, directoryPath);
+                System.out.println("Starting thread: " + serviceThread.getName());
                 serviceThread.start();
             }
         } catch (IOException e) {

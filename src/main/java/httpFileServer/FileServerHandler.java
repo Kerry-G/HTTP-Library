@@ -36,7 +36,8 @@ public class FileServerHandler implements RequestHandler {
 
         responseBuilder
                 .addHeader("Date", dtf.format(now))
-                .addHeader("Content-Type", "text/html");
+                .addHeader("Content-Type", "text/html")
+                .addHeader("Content-Disposition", "inline");
 
         try {
             String path = request.getPath();
