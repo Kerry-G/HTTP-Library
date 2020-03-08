@@ -216,7 +216,7 @@ public class Request implements HttpSerialize {
             }  else {
                 // Process headers
                 String[] split = line.split(":");
-                headers.put(split[0], line.replace(split[0].toLowerCase(), "").replace(": ", ""));
+                headers.put(split[0], line.replace(split[0], "").replace(": ", ""));
             }
         }
 
