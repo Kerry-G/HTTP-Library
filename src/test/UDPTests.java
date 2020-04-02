@@ -29,7 +29,7 @@ public class UDPTests {
                 .createRequest();
 
 
-        Response response = request.send(8007);
+        Response response = request.send(8080);
 
         assertEquals(200,response.getStatus(),"Status should be 200");
     }

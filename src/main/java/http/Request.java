@@ -2,10 +2,7 @@ package http;
 
 import logger.Logger;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
+import java.io.*;
 import java.net.*;
 import java.nio.ByteBuffer;
 import java.nio.channels.SelectionKey;
@@ -212,7 +209,7 @@ public class Request implements HttpSerialize {
     }
 
 
-    public static Request fromBufferedReader(BufferedReader in) throws IOException, RuntimeException {
+    public static Request fromBufferedReader(String s) throws IOException, RuntimeException {
         RequestBuilder rb = new RequestBuilder();
         Headers headers = new Headers();
         boolean firstLine = true;
@@ -221,7 +218,7 @@ public class Request implements HttpSerialize {
         Method method = null;
         StringBuilder body = new StringBuilder();
         String line = null;
-
+        BufferedReader in = new BufferedReader(new StringReader(s));
         Iterator<String> iterator = in.lines().iterator();
 
         while(!done) {
