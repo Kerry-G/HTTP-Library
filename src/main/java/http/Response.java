@@ -1,8 +1,7 @@
 package http;
 
 import java.io.BufferedReader;
-import java.util.Iterator;
-import java.util.StringJoiner;
+import java.util.*;
 
 /**
  * HTTP Response class. Public interface allows you get information
@@ -76,15 +75,17 @@ public class Response implements HttpSerialize {
      * @param in
      * @return Response object containing the information
      */
-    static Response fromBufferedReader(BufferedReader in){
+    static Response fromBufferedReader(String in){
         ResponseBuilder rb = new ResponseBuilder();
         Headers headers = new Headers();
         boolean firstLine = true;
         boolean iteratorReachedBody = false;
 
         StringBuilder body = new StringBuilder();
+        String[] lines = in.split("\\r?\\n");
+        List<String> l = Arrays.asList(lines);
+        Iterator<String> iterator = l.iterator();
 
-        Iterator<String> iterator = in.lines().iterator();
         while(iterator.hasNext()){
             String line = iterator.next();
             if (firstLine){

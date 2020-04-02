@@ -7,10 +7,14 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.*;
-import java.util.Arrays;
-import java.util.Iterator;
-import java.util.List;
-import java.util.StringJoiner;
+import java.nio.ByteBuffer;
+import java.nio.channels.SelectionKey;
+import java.nio.channels.Selector;
+import java.nio.charset.StandardCharsets;
+import java.util.*;
+import java.nio.channels.DatagramChannel;
+
+import static java.nio.channels.SelectionKey.OP_READ;
 
 
 /**
@@ -23,6 +27,7 @@ public class Request implements HttpSerialize {
     private String version = "HTTP/1.0";
 
     private InetAddress address;
+    private SocketAddress router;
     private String path;
     private Headers headers;
     private String body;
@@ -42,6 +47,7 @@ public class Request implements HttpSerialize {
         this.body = body;
         this.headers = headers;
         this.version = version;
+        this.router = new InetSocketAddress("localhost", 3000);
     }
 
     public Method getMethod() {
@@ -121,28 +127,50 @@ public class Request implements HttpSerialize {
      * @return A single response object
      */
     private Response sendIsolatedRequest(int port) {
-        Socket socket = null;
+        DatagramChannel channel = null;
         Response response = null;
         try {
             Logger.debug("Creating socket at port " + port + " with address: " + this.address.getHostAddress());
-            socket = new Socket(this.address.getHostAddress(), port);
-
-            OutputStreamWriter out = new OutputStreamWriter(socket.getOutputStream());
-            BufferedReader in = new BufferedReader (new InputStreamReader(socket.getInputStream()));
 
             if(this.method.equals(Method.POST) && this.body != null && !this.body.isEmpty()){
                 this.headers.put("Content-Length", String.valueOf(this.body.getBytes().length));
             }
 
-            String serialized = this.getSerialized();
-            out.write(serialized);
-            out.flush();
+            channel = DatagramChannel.open();
+            Packet packet = new Packet.Builder()
+                    .setType(0)
+                    .setSequenceNumber(1L)
+                    .setPortNumber(port)
+                    .setPeerAddress(address)
+                    .setPayload(getSerialized().getBytes())
+                    .create();
+            Logger.debug("Sending " + getSerialized() + " to router at " + router );
+            channel.send(packet.toBuffer(), router);
 
-            response = Response.fromBufferedReader(in);
+            channel.configureBlocking(false);
+            Selector selector = Selector.open();
+            channel.register(selector, OP_READ);
+            Logger.debug("Waiting for the response");
+            selector.select(5000);
+            Set<SelectionKey> keys = selector.selectedKeys();
+            if(keys.isEmpty()){
+                Logger.println("No response after timeout");
+                // return an empty response
+            }
 
-            out.close();
-            in.close();
-            socket.close();
+            ByteBuffer buf = ByteBuffer.allocate(Packet.MAX_LEN);
+            SocketAddress router = channel.receive(buf);
+            buf.flip();
+            Packet resp = Packet.fromBuffer(buf);
+            Logger.println("Packet: " + resp);
+            Logger.println("Router: " + router);
+            String payload = new String(resp.getPayload(), StandardCharsets.UTF_8);
+            Logger.println("Payload: " +  payload);
+
+            keys.clear();
+
+            response = Response.fromBufferedReader(payload);
+
 
         } catch (IOException e) {
             Logger.debug(e.getMessage());
