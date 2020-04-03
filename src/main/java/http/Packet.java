@@ -1,5 +1,7 @@
 package http;
 
+import logger.Logger;
+
 import java.io.IOException;
 import java.net.Inet4Address;
 import java.net.InetAddress;
@@ -100,6 +102,7 @@ public class Packet {
      * fromBuffer creates a packet from the given ByteBuffer in BigEndian.
      */
     public static Packet fromBuffer(ByteBuffer buf) throws IOException {
+        System.out.println(buf.limit());
         if (buf.limit() < MIN_LEN || buf.limit() > MAX_LEN) {
             throw new IOException("Invalid length");
         }
@@ -132,7 +135,7 @@ public class Packet {
 
     @Override
     public String toString() {
-        return String.format("#%d peer=%s:%d, size=%d", sequenceNumber, peerAddress, peerPort, payload.length);
+        return String.format("sequenceNumber=%d peer=%s:%d, size=%d", sequenceNumber, peerAddress, peerPort, payload.length);
     }
 
     public static class Builder {
