@@ -1,12 +1,11 @@
-import http.Method;
-import http.Request;
-import http.RequestBuilder;
-import http.Response;
+import http.*;
 import logger.Logger;
 import org.junit.jupiter.api.Test;
 
+import java.net.InetAddress;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -33,4 +32,33 @@ public class UDPTests {
 
         assertEquals(200,response.getStatus(),"Status should be 200");
     }
+
+    @Test
+    void PacketHandlerTest(){
+        try {
+            URL url = new URL("http://localhost/");
+            InetAddress address = InetAddress.getByName(url.getHost());
+            List<Packet> l = PacketHandler.createPacketList("0123456789ABCDEFGHIJKLMNOP", address, 3000, 1);
+            assertEquals(l.size() > 0, true);
+
+            StringBuilder sb = new StringBuilder();
+            for (int i=0; i<2500; i++){
+                sb.append('0');
+            }
+
+            int sequenceNumber = 4;
+            List<Packet> l2 = PacketHandler.createPacketList(sb.toString(), address, 3000, sequenceNumber);
+            assertEquals(3, l2.size());
+
+            long expectedLatestSequenceNumber = sequenceNumber+l2.size(); // what it should be
+            long actualLatestSequenceNumber = l2.get(l2.size()-1).getSequenceNumber(); // get last element sequence no
+            assertEquals(expectedLatestSequenceNumber,actualLatestSequenceNumber);
+        } catch ( Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+
 }
+
+
