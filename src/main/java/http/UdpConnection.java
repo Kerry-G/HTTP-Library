@@ -10,6 +10,7 @@ import java.nio.ByteBuffer;
 import java.nio.channels.DatagramChannel;
 import java.nio.channels.SelectionKey;
 import java.nio.channels.Selector;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 
@@ -31,6 +32,7 @@ public class UdpConnection {
     boolean connectionAccepted;
     final String NO_PAYLOAD = "NO_PAYLOAD";
     DatagramChannel channel;
+    Integer nbOfPackets;
 
     public UdpConnection(InetAddress address, int port) {
         this.address = address;
@@ -52,8 +54,7 @@ public class UdpConnection {
     }
 
     long startHandShake(){
-        Packet synack = sendPacketAndReceiveAnswer(1,0, NO_PAYLOAD);
-        Logger.println(synack.toString());
+        Packet synack = sendPacketAndReceiveAnswer(1, 0, String.valueOf(nbOfPackets));
         return finishHandShake(synack.getSequenceNumber());
     }
 
@@ -76,7 +77,7 @@ public class UdpConnection {
                                                 .setPeerAddress(address)
                                                 .setPayload(payload.getBytes())
                                                 .create();
-            System.out.println("Sending: " + packet.toBuffer().limit());
+
             channel.send(packet.toBuffer(), router);
         } catch (IOException e) {
             e.printStackTrace();
@@ -144,16 +145,63 @@ public class UdpConnection {
     }
 
     public String send(String serialized){
+        nbOfPackets = Math.floorDiv(serialized.length(), (Packet.MAX_LEN - Packet.MIN_LEN))+1;
         long sequenceNumber = startHandShake();
-        List<Packet> list = PacketHandler.createPacketList(serialized, this.address, this.port, sequenceNumber);
-        long lastSequence = sequenceNumber;
-        for (Packet p: list){
-            Packet ack = this.sendPacketAndReceiveAnswer(p);
 
-            lastSequence = p.getSequenceNumber();
+        ARQ(serialized, sequenceNumber);
+
+        Logger.println("done sending");
+
+        //should listen in a loop
+
+        String answer = "";
+        try {
+        channel.configureBlocking(false);
+        Selector selector = Selector.open();
+        channel.register(selector, OP_READ);
+        Logger.debug("Waiting for the response");
+        selector.select(5000);
+        Set<SelectionKey> keys = selector.selectedKeys();
+        if (keys.isEmpty()) {
+            Logger.println("No response after timeout");
+            // return an empty response
         }
 
-        return "";
+        ByteBuffer buf = ByteBuffer.allocate(Packet.MAX_LEN);
+        SocketAddress router = channel.receive(buf);
+        buf.flip();
+            answer = new String(Packet.fromBuffer(buf).getPayload());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        // we know that we send everythiung and we should receive response from server
+        return answer;
+    }
+
+    public void ARQ(String serialized, long sequenceNumber) {
+        List<Packet> list = PacketHandler.createPacketList(serialized, this.address, this.port, sequenceNumber);
+        long lastSequence = sequenceNumber;
+
+        for (Packet p: list){
+            Packet ack = this.sendPacketAndReceiveAnswer(p);
+            lastSequence = ack.getSequenceNumber();
+        }
+
+
+        long lastSequenceNumberExcepted = list.get(list.size()-1).getSequenceNumber();
+
+        while(lastSequenceNumberExcepted != lastSequence){
+            Packet packetToSend = null;
+            for (Packet packet : list){
+                if (packet.getSequenceNumber() == lastSequence) {
+                    packetToSend = packet;
+                    break;
+                }
+            }
+            if (packetToSend == null) break;
+            Packet ack = this.sendPacketAndReceiveAnswer(packetToSend);
+            lastSequence = ack.getSequenceNumber();
+        }
     }
 
 

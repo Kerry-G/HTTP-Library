@@ -5,6 +5,7 @@ import httpFileServer.FileServerHandler;
 import logger.Logger;
 
 import java.io.IOException;
+import java.math.BigInteger;
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
 import java.nio.ByteBuffer;
@@ -17,7 +18,8 @@ public class Server {
     Integer port = 8080;
     String directoryPath = "./";
     Boolean serverOn = true;
-
+    Integer numberOfPacketsExpected = 0;
+    long sequence = 0;
     public Server(int port){
         this.port = port;
     }
@@ -54,7 +56,6 @@ public class Server {
                 buf.flip();
                 int type = packet.getType();
                 UdpConnection udpConnection = new UdpConnection(packet.getPeerAddress(), packet.getPeerPort(), channel);
-
                 /**
                  * SYN -> server
                  * SYN-ACK -> client
@@ -69,45 +70,44 @@ public class Server {
                  */
                 switch (type){
                     case 0:
-                        // 4,5,6
-                        // client -> 4, server -> 5
-                        // client -> 6, server -> 5
-                        // client -> 5, server -> 7
-                        Logger.println("Data Packet Received");
-                        long sequence = ph.add(packet);
+                        Logger.debug("Data Packet Received");
+                        sequence = ph.add(packet);
                         udpConnection.sendPacket(3, sequence, "NO_PAYLOAD");
                         break;
                     case 1:
-                        Logger.println("SYN received");
+                        Logger.debug("SYN received");
+                        numberOfPacketsExpected = Integer.parseInt(new String(packet.getPayload()));
                         udpConnection.receiveHandShake(packet.getSequenceNumber());
                         break;
                     case 2:
-                        Logger.println("SYN-ACK received (should not happen)");
+                        Logger.debug("SYN-ACK received (should not happen)");
                         break;
                     case 3:
-                        Logger.println("ACK received");
+                        Logger.debug("ACK received");
                         break;
                 }
+                if (numberOfPacketsExpected.equals(ph.size())){
+                    String payload = ph.getPayload();
 
-//                String payload = new String(packet.getPayload(), UTF_8);
-//                Logger.println("Packet: " + packet);
-//                Logger.println("Payload: " + payload);
-//                Logger.println("Router: " + router);
-//
-//                final Request request = Request.fromBufferedReader(payload);
-//
-//                Logger.debug(" === Request object === ");
-//                Logger.debug(request.toString());
-//                RequestHandler handler = new FileServerHandler(this.directoryPath);
-//                Response response = handler.handleRequest(request);
-//                Logger.debug(" === Response Object === ");
-//                Logger.debug(response.toString());
-//                String serialized = response.getSerialized();
-//                Logger.debug(" === Serialized response === ");
-//                Logger.debug(serialized);
-//
-//                Packet resp = packet.toBuilder().setPayload(serialized.getBytes()).create();
-//                channel.send(resp.toBuffer(), router);
+                    final Request request = Request.fromBufferedReader(payload);
+
+                    Logger.debug(" === Request object === ");
+                    Logger.debug(request.toString());
+                    RequestHandler handler = new FileServerHandler(this.directoryPath);
+                    Response response = handler.handleRequest(request);
+                    Logger.debug(" === Response Object === ");
+                    Logger.debug(response.toString());
+                    String serialized = response.getSerialized();
+                    Logger.debug(" === Serialized response === ");
+                    Logger.debug(serialized);
+                    System.out.println(serialized);
+
+
+                    //Up to here is fine
+                    udpConnection.ARQ(serialized, ++sequence);
+
+                }
+
 
             }
         } catch (IOException ex) {

@@ -16,34 +16,51 @@ public class UDPTests {
         URL url = null;
 
         try {
-            url = new URL("http://localhost/");
+            url = new URL("http://localhost/test");
         } catch ( MalformedURLException e) {
             e.printStackTrace();
         }
 
+        StringBuilder sb = new StringBuilder();
+        for (int i=0; i<2500; i++){
+            sb.append('i');
+        }
+
         Request request = new RequestBuilder()
                 .setUrl(url)
-                .setMethod(Method.GET)
-                .addHeader("User-Agent", "Mozilla/5.0")
+                .setMethod(Method.POST)
+                .setBody(sb.toString())
                 .createRequest();
 
 
         Response response = request.send(8080);
-
+        System.out.println(response.getBody());
         assertEquals(200,response.getStatus(),"Status should be 200");
     }
 
     @Test
     void Kerry(){
-        UdpConnection udpConnection = null;
-        try {
-            udpConnection = new UdpConnection(InetAddress.getByName("127.0.0.1"), 8080);
-        } catch (UnknownHostException e) {
-            e.printStackTrace();
-        }
-
-        udpConnection.send("new packet");
-
+//        UdpConnection udpConnection = null;
+//        try {
+//            udpConnection = new UdpConnection(InetAddress.getByName("127.0.0.1"), 8080);
+//        } catch (UnknownHostException e) {
+//            e.printStackTrace();
+//        }
+//        URL url = null;
+//
+//        try {
+//            url = new URL("http://localhost/");
+//        } catch ( MalformedURLException e) {
+//            e.printStackTrace();
+//        }
+//        Request request = new RequestBuilder()
+//                .setUrl(url)
+//                .setMethod(Method.GET)
+//                .addHeader("User-Agent", "Mozilla/5.0")
+//                .createRequest();
+//
+//        String p = udpConnection.send(request.getSerialized());
+//        System.out.println(p);
     }
 
     @Test

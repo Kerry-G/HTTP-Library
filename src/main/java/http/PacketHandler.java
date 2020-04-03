@@ -1,10 +1,8 @@
 package http;
 
-import com.sun.xml.internal.bind.v2.runtime.reflect.Lister;
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
-
 import java.net.InetAddress;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 
@@ -14,16 +12,16 @@ public class PacketHandler {
         List<Packet> l = new ArrayList<Packet>();
 
         int stringLength = serialized.length();
-        int noOfChunks = Math.floorDiv(stringLength, Packet.MAX_LEN)+1;
+        int noOfChunks = Math.floorDiv(stringLength, (Packet.MAX_LEN - Packet.MIN_LEN))+1;
 
         Packet packet;
         String chunk;
         for (int i=0; i<noOfChunks; i++){
             if (i == noOfChunks-1) { // if last then substring until end of string
-                chunk = serialized.substring(i*Packet.MAX_LEN, stringLength);
+                chunk = serialized.substring(i*(Packet.MAX_LEN - Packet.MIN_LEN), stringLength);
             } else {
                 // 0*Max to 1*Max, 1*Max to 2*Max, 2*Max to 3*Max, ...
-                chunk = serialized.substring(i*Packet.MAX_LEN, (i+1)*Packet.MAX_LEN);
+                chunk = serialized.substring(i*(Packet.MAX_LEN - Packet.MIN_LEN), (i+1)*(Packet.MAX_LEN - Packet.MIN_LEN));
             }
 
             packet = new Packet.Builder()
@@ -39,7 +37,6 @@ public class PacketHandler {
         return l;
     }
 
-
     private List<Packet> list;
     private long lastKnownSequenceNumber;
     public PacketHandler(){
@@ -51,9 +48,7 @@ public class PacketHandler {
         list.add(p);
         list.sort(new Comparator<Packet>() {
             public int compare(Packet o1, Packet o2) {
-                if (o1.getSequenceNumber() < o2.getSequenceNumber()) return 1;
-                else if (o1.getSequenceNumber() == o2.getSequenceNumber()) return 0;
-                else return -1;
+                return Long.compare(o1.getSequenceNumber(), o2.getSequenceNumber());
             }
         });
 
@@ -69,4 +64,17 @@ public class PacketHandler {
         return lastKnownSequenceNumber;
     }
 
+    public String getPayload(){
+
+        StringBuilder sb = new StringBuilder();
+        for ( Packet p: list) {
+            String s = new String(p.getPayload());
+            sb.append(s);
+        }
+        return sb.toString();
+    }
+
+    public Integer size() {
+        return list.size();
+    }
 }

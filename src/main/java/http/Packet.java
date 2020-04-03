@@ -15,7 +15,7 @@ import java.nio.ByteOrder;
 public class Packet {
 
     public static final int MIN_LEN = 11;
-    public static final int MAX_LEN = 11 + 1024;
+    public static final int MAX_LEN = 1024;
 
     private final int type;
     private final long sequenceNumber;
@@ -102,7 +102,6 @@ public class Packet {
      * fromBuffer creates a packet from the given ByteBuffer in BigEndian.
      */
     public static Packet fromBuffer(ByteBuffer buf) throws IOException {
-        System.out.println(buf.limit());
         if (buf.limit() < MIN_LEN || buf.limit() > MAX_LEN) {
             throw new IOException("Invalid length");
         }
