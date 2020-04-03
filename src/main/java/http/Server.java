@@ -53,7 +53,8 @@ public class Server {
                 Packet packet = Packet.fromBuffer(buf);
                 buf.flip();
                 int type = packet.getType();
-                UdpConnection udpConnection;
+                UdpConnection udpConnection = new UdpConnection(packet.getPeerAddress(), packet.getPeerPort(), channel);
+
                 /**
                  * SYN -> server
                  * SYN-ACK -> client
@@ -73,13 +74,11 @@ public class Server {
                         // client -> 6, server -> 5
                         // client -> 5, server -> 7
                         Logger.println("Data Packet Received");
-                        ph.add(packet);
-                        udpConnection = new UdpConnection(packet.getPeerAddress(), packet.getPeerPort(), channel);
-                        udpConnection.receiveHandShake(packet.getSequenceNumber()); // remove
+                        long sequence = ph.add(packet);
+                        udpConnection.sendPacket(3, sequence, "NO_PAYLOAD");
                         break;
                     case 1:
                         Logger.println("SYN received");
-                        udpConnection = new UdpConnection(packet.getPeerAddress(), packet.getPeerPort(), channel);
                         udpConnection.receiveHandShake(packet.getSequenceNumber());
                         break;
                     case 2:
@@ -87,7 +86,6 @@ public class Server {
                         break;
                     case 3:
                         Logger.println("ACK received");
-
                         break;
                 }
 

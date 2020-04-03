@@ -57,8 +57,9 @@ public class UdpConnection {
         return finishHandShake(synack.getSequenceNumber());
     }
 
-    void receiveHandShake(long seqNumber){
+    long receiveHandShake(long seqNumber){
         sendPacket(2, ++seqNumber , NO_PAYLOAD);
+        return seqNumber;
     }
 
     long finishHandShake(long seqNumber){
@@ -66,7 +67,7 @@ public class UdpConnection {
         return seqNumber;
     }
 
-    private void sendPacket(int type, long sequenceNumber, String payload){
+    public void sendPacket(int type, long sequenceNumber, String payload){
         try {
             Logger.println("Sending packet number " + sequenceNumber + " at port " + port + " with address: " + this.address.getHostAddress());
             Packet packet = new Packet.Builder().setType(type)
@@ -82,7 +83,7 @@ public class UdpConnection {
         }
     }
 
-    private void sendPacket(Packet p){
+    public void sendPacket(Packet p){
         try {
             channel.send(p.toBuffer(), router);
         } catch (IOException e) {
@@ -90,7 +91,7 @@ public class UdpConnection {
         }
     }
 
-    private Packet sendPacketAndReceiveAnswer(int type, long sequenceNumber, String payload) {
+    public Packet sendPacketAndReceiveAnswer(int type, long sequenceNumber, String payload) {
         Packet answer = null;
         try {
             sendPacket(type,sequenceNumber,payload);
@@ -116,7 +117,7 @@ public class UdpConnection {
         return answer;
     }
 
-    private Packet sendPacketAndReceiveAnswer(Packet p) {
+    public Packet sendPacketAndReceiveAnswer(Packet p) {
         Packet answer = null;
         try {
             sendPacket(p);
@@ -151,9 +152,6 @@ public class UdpConnection {
 
             lastSequence = p.getSequenceNumber();
         }
-
-
-        // do some logic on p to know what payload
 
         return "";
     }

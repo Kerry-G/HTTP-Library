@@ -5,6 +5,7 @@ import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.net.InetAddress;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 public class PacketHandler {
@@ -39,13 +40,33 @@ public class PacketHandler {
     }
 
 
+    private List<Packet> list;
+    private long lastKnownSequenceNumber;
     public PacketHandler(){
-
+        list = new ArrayList<Packet>();
     }
 
-    public void add(Packet p){
+    public long add(Packet p){
+        // Keeps Packets sorted as they enter
+        list.add(p);
+        list.sort(new Comparator<Packet>() {
+            public int compare(Packet o1, Packet o2) {
+                if (o1.getSequenceNumber() < o2.getSequenceNumber()) return 1;
+                else if (o1.getSequenceNumber() == o2.getSequenceNumber()) return 0;
+                else return -1;
+            }
+        });
 
+        long sequenceNumber = list.get(0).getSequenceNumber();
+        for (Packet packet: list){ // ordered list
+            if (packet.getSequenceNumber() == sequenceNumber) continue;
+            else if (packet.getSequenceNumber() == sequenceNumber + 1){
+                sequenceNumber++;
+            } else break;
+        }
+
+        lastKnownSequenceNumber = sequenceNumber + 1;
+        return lastKnownSequenceNumber;
     }
-
 
 }
