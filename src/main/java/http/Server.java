@@ -42,23 +42,53 @@ public class Server {
             Logger.println("Server is listening at " + channel.getLocalAddress());
             ByteBuffer buf = ByteBuffer.allocate(Packet.MAX_LEN).order(ByteOrder.BIG_ENDIAN);
 
+            PacketHandler ph = new PacketHandler();
+
             for (;;) {
                 buf.clear();
                 SocketAddress router = channel.receive(buf);
 
                 // Parse a packet from the received raw data.
                 buf.flip();
-                if(buf.limit() == 0) continue;
                 Packet packet = Packet.fromBuffer(buf);
                 buf.flip();
-                System.out.println("test!");
-                if(packet.getType() == 1){
-                    Logger.println("SYN received");
-                    UdpConnection udpConnection = new UdpConnection(packet.getPeerAddress(), packet.getPeerPort(), channel);
-                    udpConnection.receiveHandShake(packet.getSequenceNumber());
-                }
-                if(packet.getType() == 3){
-                    Logger.println("ACK received");
+                int type = packet.getType();
+                UdpConnection udpConnection;
+                /**
+                 * SYN -> server
+                 * SYN-ACK -> client
+                 * ACK -> server
+                 * DATA -> server
+                 * DATA -> server
+                 * ....
+                 * FIN -> server
+                 * data -> client
+                 * data -> client
+                 * FIN -> client
+                 */
+                switch (type){
+                    case 0:
+                        // 4,5,6
+                        // client -> 4, server -> 5
+                        // client -> 6, server -> 5
+                        // client -> 5, server -> 7
+                        Logger.println("Data Packet Received");
+                        ph.add(packet);
+                        udpConnection = new UdpConnection(packet.getPeerAddress(), packet.getPeerPort(), channel);
+                        udpConnection.receiveHandShake(packet.getSequenceNumber()); // remove
+                        break;
+                    case 1:
+                        Logger.println("SYN received");
+                        udpConnection = new UdpConnection(packet.getPeerAddress(), packet.getPeerPort(), channel);
+                        udpConnection.receiveHandShake(packet.getSequenceNumber());
+                        break;
+                    case 2:
+                        Logger.println("SYN-ACK received (should not happen)");
+                        break;
+                    case 3:
+                        Logger.println("ACK received");
+
+                        break;
                 }
 
 //                String payload = new String(packet.getPayload(), UTF_8);

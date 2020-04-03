@@ -24,7 +24,6 @@ public class Request implements HttpSerialize {
     private String version = "HTTP/1.0";
 
     private InetAddress address;
-    private SocketAddress router;
     private String path;
     private Headers headers;
     private String body;
@@ -44,7 +43,6 @@ public class Request implements HttpSerialize {
         this.body = body;
         this.headers = headers;
         this.version = version;
-        this.router = new InetSocketAddress("localhost", 3000);
     }
 
     public Method getMethod() {
@@ -124,55 +122,17 @@ public class Request implements HttpSerialize {
      * @return A single response object
      */
     private Response sendIsolatedRequest(int port) {
-        DatagramChannel channel = null;
         Response response = null;
-        try {
-            Logger.debug("Creating socket at port " + port + " with address: " + this.address.getHostAddress());
+        Logger.debug("Creating socket at port " + port + " with address: " + this.address.getHostAddress());
 
-            if(this.method.equals(Method.POST) && this.body != null && !this.body.isEmpty()){
-                this.headers.put("Content-Length", String.valueOf(this.body.getBytes().length));
-            }
-
-            channel = DatagramChannel.open();
-            Packet packet = new Packet.Builder()
-                    .setType(0)
-                    .setSequenceNumber(1L)
-                    .setPortNumber(port)
-                    .setPeerAddress(address)
-                    .setPayload(getSerialized().getBytes())
-                    .create();
-            Logger.debug("Sending " + getSerialized() + " to router at " + router );
-            channel.send(packet.toBuffer(), router);
-
-            channel.configureBlocking(false);
-            Selector selector = Selector.open();
-            channel.register(selector, OP_READ);
-            Logger.debug("Waiting for the response");
-            selector.select(5000);
-            Set<SelectionKey> keys = selector.selectedKeys();
-            if(keys.isEmpty()){
-                Logger.println("No response after timeout");
-                // return an empty response
-            }
-
-            ByteBuffer buf = ByteBuffer.allocate(Packet.MAX_LEN);
-            SocketAddress router = channel.receive(buf);
-            buf.flip();
-            Packet resp = Packet.fromBuffer(buf);
-            Logger.println("Packet: " + resp);
-            Logger.println("Router: " + router);
-            String payload = new String(resp.getPayload(), StandardCharsets.UTF_8);
-            Logger.println("Payload: " +  payload);
-
-            keys.clear();
-
-            response = Response.fromBufferedReader(payload);
-
-
-        } catch (IOException e) {
-            Logger.debug(e.getMessage());
-            throw new IllegalArgumentException("Can't establish an connection.");
+        if(this.method.equals(Method.POST) && this.body != null && !this.body.isEmpty()){
+            this.headers.put("Content-Length", String.valueOf(this.body.getBytes().length));
         }
+
+        UdpConnection connection = new UdpConnection(this.address, port);
+        String payload = connection.send(this.getSerialized());
+        response = Response.fromBufferedReader(payload);
+
         return response;
     }
 

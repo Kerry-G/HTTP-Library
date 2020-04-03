@@ -1,5 +1,4 @@
 import http.*;
-import logger.Logger;
 import org.junit.jupiter.api.Test;
 
 import java.net.InetAddress;
@@ -43,7 +42,7 @@ public class UDPTests {
             e.printStackTrace();
         }
 
-        udpConnection.send();
+        udpConnection.send("new packet");
 
     }
 

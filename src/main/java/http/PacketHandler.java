@@ -38,4 +38,14 @@ public class PacketHandler {
         return l;
     }
 
+
+    public PacketHandler(){
+
+    }
+
+    public void add(Packet p){
+
+    }
+
+
 }

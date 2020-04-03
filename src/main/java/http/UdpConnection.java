@@ -7,10 +7,10 @@ import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
 import java.nio.ByteBuffer;
-import java.nio.ByteOrder;
 import java.nio.channels.DatagramChannel;
 import java.nio.channels.SelectionKey;
 import java.nio.channels.Selector;
+import java.util.List;
 import java.util.Set;
 
 import static java.nio.channels.SelectionKey.OP_READ;
@@ -51,21 +51,19 @@ public class UdpConnection {
         this.channel = channel;
     }
 
-    void startHandShake(){
+    long startHandShake(){
         Packet synack = sendPacketAndReceiveAnswer(1,0, NO_PAYLOAD);
         Logger.println(synack.toString());
-        finishHandShake(synack.getSequenceNumber());
+        return finishHandShake(synack.getSequenceNumber());
     }
 
     void receiveHandShake(long seqNumber){
         sendPacket(2, ++seqNumber , NO_PAYLOAD);
     }
 
-    void finishHandShake(long seqNumber){
+    long finishHandShake(long seqNumber){
         sendPacket(3, ++seqNumber, NO_PAYLOAD);
-//        Packet ack = sendPacketAndReceiveAnswer(3, ++seqNumber , NO_PAYLOAD);
-//        connectionAccepted = true;
-//        Logger.println(ack.toString());
+        return seqNumber;
     }
 
     private void sendPacket(int type, long sequenceNumber, String payload){
@@ -79,6 +77,14 @@ public class UdpConnection {
                                                 .create();
             System.out.println("Sending: " + packet.toBuffer().limit());
             channel.send(packet.toBuffer(), router);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void sendPacket(Packet p){
+        try {
+            channel.send(p.toBuffer(), router);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -110,9 +116,49 @@ public class UdpConnection {
         return answer;
     }
 
-    public void send(){
-        startHandShake();
+    private Packet sendPacketAndReceiveAnswer(Packet p) {
+        Packet answer = null;
+        try {
+            sendPacket(p);
+
+            channel.configureBlocking(false);
+            Selector selector = Selector.open();
+            channel.register(selector, OP_READ);
+            Logger.debug("Waiting for the response");
+            selector.select(5000);
+            Set<SelectionKey> keys = selector.selectedKeys();
+            if (keys.isEmpty()) {
+                Logger.println("No response after timeout");
+                // return an empty response
+            }
+
+            ByteBuffer buf = ByteBuffer.allocate(Packet.MAX_LEN);
+            SocketAddress router = channel.receive(buf);
+            buf.flip();
+            answer = Packet.fromBuffer(buf);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return answer;
     }
+
+    public String send(String serialized){
+        long sequenceNumber = startHandShake();
+        List<Packet> list = PacketHandler.createPacketList(serialized, this.address, this.port, sequenceNumber);
+        long lastSequence = sequenceNumber;
+        for (Packet p: list){
+            Packet ack = this.sendPacketAndReceiveAnswer(p);
+
+            lastSequence = p.getSequenceNumber();
+        }
+
+
+        // do some logic on p to know what payload
+
+        return "";
+    }
+
+
 
     /*
               DatagramChannel channel = null;
