@@ -38,30 +38,7 @@ public class UDPTests {
         assertEquals(200,response.getStatus(),"Status should be 200");
     }
 
-    @Test
-    void Kerry(){
-//        UdpConnection udpConnection = null;
-//        try {
-//            udpConnection = new UdpConnection(InetAddress.getByName("127.0.0.1"), 8080);
-//        } catch (UnknownHostException e) {
-//            e.printStackTrace();
-//        }
-//        URL url = null;
-//
-//        try {
-//            url = new URL("http://localhost/");
-//        } catch ( MalformedURLException e) {
-//            e.printStackTrace();
-//        }
-//        Request request = new RequestBuilder()
-//                .setUrl(url)
-//                .setMethod(Method.GET)
-//                .addHeader("User-Agent", "Mozilla/5.0")
-//                .createRequest();
-//
-//        String p = udpConnection.send(request.getSerialized());
-//        System.out.println(p);
-    }
+
 
     @Test
     void PacketHandlerTest(){

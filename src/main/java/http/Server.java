@@ -62,17 +62,17 @@ public class Server {
                  * ACK -> server
                  * DATA -> server
                  * DATA -> server
-                 * ....
-                 * FIN -> server
-                 * data -> client
-                 * data -> client
-                 * FIN -> client
+                 * ...
+                 * data -> [client]
+                 * data -> [client]
                  */
                 switch (type){
                     case 0:
                         Logger.debug("Data Packet Received");
                         sequence = ph.add(packet);
-                        udpConnection.sendPacket(3, sequence, "NO_PAYLOAD");
+                        if (ph.size() != numberOfPacketsExpected){
+                            udpConnection.sendPacket(3, sequence, "NO_PAYLOAD");
+                        }
                         break;
                     case 1:
                         Logger.debug("SYN received");
@@ -103,9 +103,8 @@ public class Server {
                     System.out.println(serialized);
 
 
-                    //Up to here is fine
-                    udpConnection.ARQ(serialized, ++sequence);
-
+                    // Up to here is fine
+                    udpConnection.ARQ(serialized, sequence);
                 }
 
 
