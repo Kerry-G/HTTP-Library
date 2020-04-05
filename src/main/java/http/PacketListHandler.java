@@ -45,12 +45,9 @@ public class PacketListHandler {
 
     public long add(Packet p){
         // Keeps Packets sorted as they enter
+        if(list.contains(p)) return -1;
         list.add(p);
-        list.sort(new Comparator<Packet>() {
-            public int compare(Packet o1, Packet o2) {
-                return Long.compare(o1.getSequenceNumber(), o2.getSequenceNumber());
-            }
-        });
+        list.sort(Comparator.comparingLong(Packet::getSequenceNumber));
 
         long sequenceNumber = list.get(0).getSequenceNumber();
         for (Packet packet: list){ // ordered list

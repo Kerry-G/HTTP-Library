@@ -5,7 +5,6 @@ import http.Packet;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.nio.channels.DatagramChannel;
-import java.nio.channels.Selector;
 
 public class Sender {
 
@@ -20,7 +19,6 @@ public class Sender {
     public void send(Packet packet) throws IOException {
         datagramChannel.send(packet.toBuffer(), router);
     }
-
 
 
 }

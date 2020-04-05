@@ -75,7 +75,7 @@ public class Response implements HttpSerialize {
      * @param in
      * @return Response object containing the information
      */
-    static Response fromBufferedReader(String in){
+    static public Response fromBufferedReader(String in){
         ResponseBuilder rb = new ResponseBuilder();
         Headers headers = new Headers();
         boolean firstLine = true;

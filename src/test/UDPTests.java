@@ -50,9 +50,7 @@ public class UDPTests {
 
     }
 
-
     @Test
-    @Ignore
     void SendUdpRequest(){
         URL url = null;
 
@@ -72,7 +70,6 @@ public class UDPTests {
                 .setMethod(Method.POST)
                 .setBody(sb.toString())
                 .createRequest();
-
 
         Response response = request.send(8080);
         System.out.println(response.getBody());

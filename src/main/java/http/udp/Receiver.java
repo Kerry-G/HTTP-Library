@@ -24,6 +24,10 @@ public class Receiver extends Thread {
         readBuffer = ByteBuffer.allocate(Packet.MAX_LEN);
     }
 
+    public boolean isListening() {
+        return listening;
+    }
+
     public void bind(DatagramChannel datagramChannel) throws IOException {
         bind(datagramChannel, null);
     }
