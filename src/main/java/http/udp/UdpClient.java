@@ -25,7 +25,7 @@ public class UdpClient {
     boolean sendingDone = false;
     final String NO_PAYLOAD = "NO_PAYLOAD";
     DatagramChannel channel;
-    Integer nbOfPackets;
+    Integer nbOfPackets = -1;
     long sequenceNumber = 0; // should be random ideally
     long lastSequenceNumberReceived = -1;
     private boolean done = false;
