@@ -6,7 +6,7 @@ import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 
-public class PacketHandler {
+public class PacketListHandler {
 
     public static List<Packet> createPacketList(String serialized, InetAddress inetAddress, int port, long sequenceNumber){
         List<Packet> l = new ArrayList<Packet>();
@@ -25,7 +25,7 @@ public class PacketHandler {
             }
 
             packet = new Packet.Builder()
-                    .setType(0)
+                    .setType(Packet.Type.DATA)
                     .setSequenceNumber(sequenceNumber+i+1)
                     .setPortNumber(port)
                     .setPeerAddress(inetAddress)
@@ -39,7 +39,7 @@ public class PacketHandler {
 
     private List<Packet> list;
     private long lastKnownSequenceNumber;
-    public PacketHandler(){
+    public PacketListHandler(){
         list = new ArrayList<Packet>();
     }
 

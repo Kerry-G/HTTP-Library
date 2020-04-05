@@ -1,25 +1,24 @@
 package http;
 
 
+import http.udp.Receiver;
+import http.udp.Sender;
+import http.udp.ServerPacketHandler;
 import httpFileServer.FileServerHandler;
 import logger.Logger;
 
 import java.io.IOException;
-import java.math.BigInteger;
 import java.net.InetSocketAddress;
-import java.net.SocketAddress;
-import java.nio.ByteBuffer;
-import java.nio.ByteOrder;
 import java.nio.channels.DatagramChannel;
-import static java.nio.charset.StandardCharsets.UTF_8;
+import java.nio.channels.Selector;
 
 public class Server {
 
     Integer port = 8080;
+    Sender sender;
+    Receiver receiver;
     String directoryPath = "./";
     Boolean serverOn = true;
-    Integer numberOfPacketsExpected = 0;
-    long sequence = 0;
     public Server(int port){
         this.port = port;
     }
@@ -39,78 +38,17 @@ public class Server {
 
     public void initialize() {
 
-        try (DatagramChannel channel = DatagramChannel.open()) {
-            channel.bind(new InetSocketAddress(port));
-            Logger.println("Server is listening at " + channel.getLocalAddress());
-            ByteBuffer buf = ByteBuffer.allocate(Packet.MAX_LEN).order(ByteOrder.BIG_ENDIAN);
+        try {
+            Selector selector = Selector.open();
+            DatagramChannel datagramChannel = selector.provider().openDatagramChannel();
+            receiver = new Receiver();
+            sender = new Sender(datagramChannel);
+            ServerPacketHandler serverPacketHandler = new ServerPacketHandler(sender);
+            receiver.bind(datagramChannel, new InetSocketAddress(port));
+            receiver.setPacketHandler(serverPacketHandler);
+            receiver.start();
 
-            PacketHandler ph = new PacketHandler();
-
-            for (;;) {
-                buf.clear();
-                SocketAddress router = channel.receive(buf);
-
-                // Parse a packet from the received raw data.
-                buf.flip();
-                Packet packet = Packet.fromBuffer(buf);
-                buf.flip();
-                int type = packet.getType();
-                UdpConnection udpConnection = new UdpConnection(packet.getPeerAddress(), packet.getPeerPort(), channel);
-                /**
-                 * SYN -> server
-                 * SYN-ACK -> client
-                 * ACK -> server
-                 * DATA -> server
-                 * DATA -> server
-                 * ....
-                 * FIN -> server
-                 * data -> client
-                 * data -> client
-                 * FIN -> client
-                 */
-                switch (type){
-                    case 0:
-                        Logger.debug("Data Packet Received");
-                        sequence = ph.add(packet);
-                        udpConnection.sendPacket(3, sequence, "NO_PAYLOAD");
-                        break;
-                    case 1:
-                        Logger.debug("SYN received");
-                        numberOfPacketsExpected = Integer.parseInt(new String(packet.getPayload()));
-                        udpConnection.receiveHandShake(packet.getSequenceNumber());
-                        break;
-                    case 2:
-                        Logger.debug("SYN-ACK received (should not happen)");
-                        break;
-                    case 3:
-                        Logger.debug("ACK received");
-                        break;
-                }
-                if (numberOfPacketsExpected.equals(ph.size())){
-                    String payload = ph.getPayload();
-
-                    final Request request = Request.fromBufferedReader(payload);
-
-                    Logger.debug(" === Request object === ");
-                    Logger.debug(request.toString());
-                    RequestHandler handler = new FileServerHandler(this.directoryPath);
-                    Response response = handler.handleRequest(request);
-                    Logger.debug(" === Response Object === ");
-                    Logger.debug(response.toString());
-                    String serialized = response.getSerialized();
-                    Logger.debug(" === Serialized response === ");
-                    Logger.debug(serialized);
-                    System.out.println(serialized);
-
-
-                    //Up to here is fine
-                    udpConnection.ARQ(serialized, ++sequence);
-
-                }
-
-
-            }
-        } catch (IOException ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
         }
     }

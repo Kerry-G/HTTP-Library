@@ -1,17 +1,11 @@
 package http;
 
+import http.udp.UdpClient;
 import logger.Logger;
 
 import java.io.*;
 import java.net.*;
-import java.nio.ByteBuffer;
-import java.nio.channels.SelectionKey;
-import java.nio.channels.Selector;
-import java.nio.charset.StandardCharsets;
 import java.util.*;
-import java.nio.channels.DatagramChannel;
-
-import static java.nio.channels.SelectionKey.OP_READ;
 
 
 /**
@@ -129,7 +123,7 @@ public class Request implements HttpSerialize {
             this.headers.put("Content-Length", String.valueOf(this.body.getBytes().length));
         }
 
-        UdpConnection connection = new UdpConnection(this.address, port);
+        UdpClient connection = new UdpClient(this.address, port);
         String payload = connection.send(this.getSerialized());
         response = Response.fromBufferedReader(payload);
 

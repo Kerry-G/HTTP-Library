@@ -14,17 +14,44 @@ import java.nio.ByteOrder;
  */
 public class Packet {
 
+    public enum Type {
+        DATA(0),
+        SYN(1),
+        ACKSYN(2),
+        ACK(3),
+        ERR(-1);
+
+        private final int Integer;
+
+        Type(int i) {
+            this.Integer = i;
+        }
+
+        public int getInteger(){
+            return Integer;
+        }
+
+        static Type fromInt(int i){
+            if(i == 0) return Type.DATA;
+            else if (i == 1 ) return Type.SYN;
+            else if (i == 2 ) return Type.ACKSYN;
+            else if (i == 3 ) return Type.ACK;
+            else return Type.ERR;
+        }
+
+    }
+
     public static final int MIN_LEN = 11;
     public static final int MAX_LEN = 1024;
 
-    private final int type;
+    private final Type type;
     private final long sequenceNumber;
     private final InetAddress peerAddress;
     private final int peerPort;
     private final byte[] payload;
 
 
-    public Packet(int type, long sequenceNumber, InetAddress peerAddress, int peerPort, byte[] payload) {
+    public Packet(Type type, long sequenceNumber, InetAddress peerAddress, int peerPort, byte[] payload) {
         this.type = type;
         this.sequenceNumber = sequenceNumber;
         this.peerAddress = peerAddress;
@@ -32,7 +59,7 @@ public class Packet {
         this.payload = payload;
     }
 
-    public int getType() {
+    public Type getType() {
         return type;
     }
 
@@ -70,7 +97,7 @@ public class Packet {
      * The order of the buffer should be set as BigEndian.
      */
     private void write(ByteBuffer buf) {
-        buf.put((byte) type);
+        buf.put((byte) type.getInteger());
         buf.putInt((int) sequenceNumber);
         buf.put(peerAddress.getAddress());
         buf.putShort((short) peerPort);
@@ -108,7 +135,7 @@ public class Packet {
 
         Builder builder = new Builder();
 
-        builder.setType(Byte.toUnsignedInt(buf.get()));
+        builder.setType(Type.fromInt(Byte.toUnsignedInt(buf.get())));
         builder.setSequenceNumber(Integer.toUnsignedLong(buf.getInt()));
 
         byte[] host = new byte[]{buf.get(), buf.get(), buf.get(), buf.get()};
@@ -138,13 +165,13 @@ public class Packet {
     }
 
     public static class Builder {
-        private int type;
+        private Type type;
         private long sequenceNumber;
         private InetAddress peerAddress;
         private int portNumber;
         private byte[] payload;
 
-        public Builder setType(int type) {
+        public Builder setType(Type type) {
             this.type = type;
             return this;
         }
@@ -171,6 +198,11 @@ public class Packet {
 
         public Packet create() {
             return new Packet(type, sequenceNumber, peerAddress, portNumber, payload);
+        }
+
+        public Builder setPayload(String test) {
+            setPayload(test.getBytes());
+            return this;
         }
     }
 }

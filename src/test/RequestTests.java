@@ -2,6 +2,7 @@ import http.Method;
 import http.Request;
 import http.RequestBuilder;
 import http.Response;
+import org.junit.Ignore;
 import org.junit.jupiter.api.Test;
 
 import java.net.MalformedURLException;
@@ -12,6 +13,7 @@ import java.net.URL;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
+@Ignore
 public class RequestTests {
 
     @Test
