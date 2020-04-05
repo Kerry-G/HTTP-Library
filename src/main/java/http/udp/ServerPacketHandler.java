@@ -73,10 +73,12 @@ public class ServerPacketHandler implements PacketHandler {
     private void handleDataPacket(Packet packet) throws IOException {
         final ServerConnection serverConnection = server.getServerConnectionHashMap().get(
                 packet.getPeerAddress());
-        serverConnection.setSequenceNumber(packet.getSequenceNumber());
+
         final PacketListHandler packetListHandler = serverConnection.getPacketListHandler();
-        packetListHandler.add(packet);
-        Packet p = packet.toBuilder().setType(Packet.Type.ACK).create();
+        long sequenceNumber = packetListHandler.add(packet);
+        serverConnection.setSequenceNumber(sequenceNumber);
+
+        Packet p = packet.toBuilder().setType(Packet.Type.ACK).setSequenceNumber(sequenceNumber).setPayload("NO PAYLOAD").create();
         sender.send(p);
     }
 

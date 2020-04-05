@@ -31,7 +31,7 @@ public class ClientPacketHandler implements PacketHandler {
                     handleDataPacket(packet);
                     break;
                 case SYN:
-                   Logger.debug("SYN received (should not happen)");
+                    Logger.debug("SYN received (should not happen)");
                     break;
                 case ACKSYN:
                     Logger.debug("SYN-ACK received");
@@ -68,8 +68,8 @@ public class ClientPacketHandler implements PacketHandler {
             return;
         }
         final PacketListHandler packetListHandler = udpClient.getPacketListHandler();
-        packetListHandler.add(packet);
-        Packet p = packet.toBuilder().setType(Packet.Type.ACK).setPayload("NO_PAYLOAD").create();
+        long sequenceNumber = packetListHandler.add(packet);
+        Packet p = packet.toBuilder().setSequenceNumber(sequenceNumber).setType(Packet.Type.ACK).setPayload("NO_PAYLOAD").create();
         sender.send(p);
     }
 

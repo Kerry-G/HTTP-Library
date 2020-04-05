@@ -103,7 +103,7 @@ public class Server {
         sc.setNbOfResponsePacketsExpected(Math.floorDiv(serialized.length(), (Packet.MAX_LEN - Packet.MIN_LEN))+1);
 
         long lastSequence = sc.getNbOfResponsePacketsExpected() + sc.getSequenceNumber() + 1; // Last sequence number we receive is SYNACK (n+1) + nbOfPacket we sent + 1
-        List<Packet> list = PacketListHandler.createPacketList(serialized, sc.getInetAddress(), sc.getPort() , sc.getSequenceNumber()+1);
+        List<Packet> list = PacketListHandler.createPacketList(serialized, sc.getInetAddress(), sc.getPort() , sc.getSequenceNumber());
 
         for (Packet p: list){
             try {
