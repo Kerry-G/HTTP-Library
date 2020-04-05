@@ -39,11 +39,6 @@ public class ClientPacketHandler implements PacketHandler {
                     break;
                 case ACK:
                     Logger.debug("ACK received");
-                    Packet ack = packet.toBuilder()
-                                       .setType(Packet.Type.ACK)
-                                       .setPayload("NO_PAYLOAD")
-                                       .create();
-                    sender.send(ack);
                     break;
                 case ERR:
                     Logger.println("[ERROR] Something happened.");
