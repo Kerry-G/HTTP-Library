@@ -105,8 +105,8 @@ public class UdpClient {
         nbOfPackets = Math.floorDiv(serialized.length(), (Packet.MAX_LEN - Packet.MIN_LEN))+1;
         handshake();
 
-        System.out.println("Sending " + nbOfPackets + " packets.");
-        System.out.println("Currently at packets: " + lastSequenceNumberReceived);
+        Logger.debug("Sending " + nbOfPackets + " packets.");
+        Logger.debug("Currently at packets: " + lastSequenceNumberReceived);
         long lastSequence = nbOfPackets + lastSequenceNumberReceived + 1; // Last sequence number we receive is SYNACK (n+1) + nbOfPacket we sent + 1
         List<Packet> list = PacketListHandler.createPacketList(serialized, this.address, this.port, lastSequenceNumberReceived+1);
 
@@ -131,13 +131,12 @@ public class UdpClient {
             }
             if(lastSequenceNumberReceived > lastSequence) sendingDone = true; // send is done
 
-            System.out.println("TODO: Server is missing packets");
-            System.out.println("Last sequence number received is: " + lastSequenceNumberReceived + ". Should be more or equal than: " + lastSequence);
+            Logger.debug("Last sequence number received is: " + lastSequenceNumberReceived + ". Should be more or equal than: " + lastSequence);
             long packetToSend = lastSequenceNumberReceived;
             if(lastSequenceNumberReceived < list.get(0).getSequenceNumber()){
                 packetToSend = list.get(0).getSequenceNumber();
             }
-            System.out.println("Trying to send packet#: " + packetToSend);
+            Logger.debug("Trying to send packet#: " + packetToSend);
             for (Packet p : list){
                 if (p.getSequenceNumber() == packetToSend) {
                     sendPacket(p);

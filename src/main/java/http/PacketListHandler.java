@@ -1,5 +1,7 @@
 package http;
 
+import logger.Logger;
+
 import java.net.InetAddress;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -45,7 +47,7 @@ public class PacketListHandler {
         list = new ArrayList<Packet>();
         this.firstSequenceNumber = firstSequenceNumber;
         this.lastKnownSequenceNumber = firstSequenceNumber;
-        System.out.println("firstSequenceNumber: " + firstSequenceNumber);
+        Logger.debug("firstSequenceNumber: " + firstSequenceNumber);
     }
 
     public long getFirstSequenceNumber(){

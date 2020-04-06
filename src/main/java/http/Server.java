@@ -130,13 +130,12 @@ public class Server {
                 e.printStackTrace();
             }
 
-            System.out.println("TODO: Client is missing packets");
-            System.out.println("Last sequence number received is: " + sc.getSequenceNumber() + ". Should be : " + lastSequence);
+            Logger.debug("Last sequence number received is: " + sc.getSequenceNumber() + ". Should be : " + lastSequence);
             long packetToSend = sc.getSequenceNumber();
             if(sc.getSequenceNumber() < list.get(0).getSequenceNumber()){
                 packetToSend = list.get(0).getSequenceNumber();
             }
-            System.out.println("Trying to send packet#: " + packetToSend);
+            Logger.debug("Trying to send packet#: " + packetToSend);
             for (Packet p : list){
                 if (p.getSequenceNumber() == packetToSend) {
                     try {
