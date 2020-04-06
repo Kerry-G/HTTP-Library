@@ -57,8 +57,8 @@ public class PacketListHandler {
     public long add(Packet p){
         // Keeps Packets sorted as they enter
 
-
-        if(!list.contains(p)) list.add(p);
+        boolean isPacketInTheList = list.stream().anyMatch(packet -> packet.getSequenceNumber() == p.getSequenceNumber());
+        if(!isPacketInTheList) list.add(p);
         list.sort(Comparator.comparingLong(Packet::getSequenceNumber));
 
         lastKnownSequenceNumber = firstSequenceNumber;
@@ -67,6 +67,7 @@ public class PacketListHandler {
                 lastKnownSequenceNumber++;
             }
         }
+
 
         return lastKnownSequenceNumber;
     }
