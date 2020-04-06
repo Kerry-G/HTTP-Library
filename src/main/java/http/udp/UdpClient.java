@@ -74,6 +74,7 @@ public class UdpClient {
         while(!connectionEstablish){
             try {
                 Thread.sleep(300);
+                sendPacket(Packet.Type.SYN, sequenceNumber, String.valueOf(nbOfPackets));
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -126,6 +127,13 @@ public class UdpClient {
 
             System.out.println("TODO: Server is missing packets");
             System.out.println("Last sequence number received is: " + lastSequenceNumberReceived + ". Should be more or equal than: " + lastSequence);
+
+            for (Packet p : list){
+                if (p.getSequenceNumber() == lastSequenceNumberReceived) {
+                    sendPacket(p);
+                    break;
+                }
+            }
         }
         while(!done){
             Thread.yield();
