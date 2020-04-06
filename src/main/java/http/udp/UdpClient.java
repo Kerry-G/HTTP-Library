@@ -112,7 +112,7 @@ public class UdpClient {
         for (Packet p: list){
             sendPacket(p);
         }
-        if(lastSequenceNumberReceived <= lastSequence) sendingDone = true;
+        if(lastSequenceNumberReceived > lastSequence) sendingDone = true;
         //ARQ stuff
         while (!sendingDone){
             try {
@@ -120,7 +120,7 @@ public class UdpClient {
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-            if(lastSequenceNumberReceived <= lastSequence) sendingDone = true; // send is done
+            if(lastSequenceNumberReceived > lastSequence) sendingDone = true; // send is done
 
             System.out.println("TODO: Server is missing packets");
             System.out.println("Last sequence number received is: " + lastSequenceNumberReceived + ". Should be more or equal than: " + lastSequence);
