@@ -115,13 +115,26 @@ public class Server {
         final boolean b = sc.getSequenceNumber() <= lastSequence;
         while (b){
             try {
-                Thread.sleep(2000);
+                Thread.sleep(500);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
+            System.out.println("Server Connection last number:" + sc.getSequenceNumber());
+            System.out.println("Last sequence we expected: " + lastSequence);
             if (sc.getSequenceNumber() <= lastSequence) break;
             System.out.println("TODO: Client is missing packets");
             System.out.println("Last sequence number received is: " + sc.getSequenceNumber() + ". Should be : " + lastSequence);
+            for (Packet p : list){
+                if (p.getSequenceNumber() == sc.getSequenceNumber()) {
+                    try {
+                        sender.send(p);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    break;
+                }
+            }
+
         }
 
         Packet FIN = new Packet.Builder()

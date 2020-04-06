@@ -26,7 +26,8 @@ public class UdpClient {
     final String NO_PAYLOAD = "NO_PAYLOAD";
     DatagramChannel channel;
     Integer nbOfPackets = -1;
-    long sequenceNumber = 0; // should be random ideally
+    long startingSequenceNumber = (long) (Math.random() * 100);
+    long sequenceNumber = startingSequenceNumber;
     long lastSequenceNumberReceived = -1;
     private boolean done = false;
 
@@ -70,11 +71,11 @@ public class UdpClient {
 
     public void handshake(){
         while(!receiver.listening){Thread.yield();}
-        sendPacket(Packet.Type.SYN, sequenceNumber, String.valueOf(nbOfPackets));
+        sendPacket(Packet.Type.SYN, startingSequenceNumber, String.valueOf(nbOfPackets));
         while(!connectionEstablish){
             try {
                 Thread.sleep(300);
-                sendPacket(Packet.Type.SYN, sequenceNumber, String.valueOf(nbOfPackets));
+                sendPacket(Packet.Type.SYN, startingSequenceNumber, String.valueOf(nbOfPackets));
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -117,6 +118,7 @@ public class UdpClient {
             sendPacket(p);
         }
         if(lastSequenceNumberReceived <= lastSequence) sendingDone = true;
+        //ARQ stuff
         while (!sendingDone){
             try {
                 Thread.sleep(2000);
@@ -135,6 +137,7 @@ public class UdpClient {
                 }
             }
         }
+        // wait for FIN
         while(!done){
             Thread.yield();
         }

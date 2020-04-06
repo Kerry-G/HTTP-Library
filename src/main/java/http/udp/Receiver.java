@@ -74,6 +74,7 @@ public class Receiver extends Thread {
                 readBuffer.clear();
                 selectionKey.selector().select();
                 if (selectionKey.isReadable()){
+                    lastCommunicationTime = System.currentTimeMillis();
                     datagramChannel.receive(readBuffer);
                     readBuffer.flip();
                     Packet packet = Packet.fromBuffer(readBuffer);
@@ -86,5 +87,8 @@ public class Receiver extends Thread {
         }
     }
 
+    public long getLastCommunicationTime() {
+        return lastCommunicationTime;
+    }
 }
 
