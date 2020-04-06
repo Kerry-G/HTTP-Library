@@ -26,7 +26,7 @@ public class ServerPacketHandler implements PacketHandler {
             switch (type){
                 case DATA:
                     Logger.debug("Data Packet Received");
-                    if (!server.isConnectionActive(packet.getPeerAddress())) return;
+                    if(server.getCurrentlyHandledServerConnection() == null && !server.isConnectionActive(packet.getPeerAddress())) return;
                     handleDataPacket(packet);
                     break;
                 case SYN:
@@ -73,6 +73,10 @@ public class ServerPacketHandler implements PacketHandler {
     }
 
     private void handleDataPacket(Packet packet) throws IOException {
+        if(new String(packet.getPayload()).equals("FIN")){
+            server.getCurrentlyHandledServerConnection().setFinish(true);
+            return;
+        }
         final ServerConnection serverConnection = server.getServerConnectionHashMap().get(
                 packet.getPeerAddress());
 

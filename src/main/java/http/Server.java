@@ -159,6 +159,18 @@ public class Server {
 
         try {
             sender.send(FIN);
+            int MAX_TRIES = 10;
+            int tries = 0;
+            while(!sc.isFinish()){
+                tries++;
+                if(MAX_TRIES == tries) break;
+                try {
+                    Thread.sleep(200);
+                    if(!sc.isFinish()) sender.send(FIN);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }

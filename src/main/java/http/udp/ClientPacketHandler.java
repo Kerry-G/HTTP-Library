@@ -49,6 +49,11 @@ public class ClientPacketHandler implements PacketHandler {
     }
 
     private void handleFinPacket(Packet packet) {
+        try {
+            sender.send(packet);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         udpClient.setDone(true);
     }
 

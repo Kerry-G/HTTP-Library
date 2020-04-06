@@ -12,7 +12,7 @@ public class ServerConnection {
     private long SequenceNumber;
     private PacketListHandler packetListHandler;
     private InetAddress inetAddress;
-
+    private boolean finish;
     public int getNbOfPacketsExpected() {
         return nbOfPacketsExpected;
     }
@@ -59,5 +59,13 @@ public class ServerConnection {
 
     public void setPacketListHandler(PacketListHandler packetListHandler) {
         this.packetListHandler = packetListHandler;
+    }
+
+    public void setFinish(boolean finish) {
+        this.finish = finish;
+    }
+
+    public boolean isFinish() {
+        return finish;
     }
 }
