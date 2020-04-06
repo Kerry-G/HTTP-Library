@@ -55,14 +55,15 @@ public class UDPTests {
         URL url = null;
 
         try {
-            url = new URL("http://localhost/test");
+            url = new URL("http://localhost/new_file.txt");
         } catch ( MalformedURLException e) {
             e.printStackTrace();
         }
 
         StringBuilder sb = new StringBuilder();
+        String content = "1234567890ABCDEFGHJKLMNOPQRSTUVWXYZ";
         for (int i=0; i<2500; i++){
-            sb.append('i');
+            sb.append(content.charAt((i*13)%content.length()));
         }
 
         Request request = new RequestBuilder()
@@ -74,7 +75,10 @@ public class UDPTests {
         Response response = request.send(8080);
         System.out.println(response.getBody());
         assertEquals(200,response.getStatus(),"Status should be 200");
+        //assertEquals(sb.toString() + "\n", response.getBody(), "Request content should be same as File Content");
     }
+
+
 
     @Test
     @Ignore

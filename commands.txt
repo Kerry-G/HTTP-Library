@@ -1,0 +1,4 @@
+. .\src\main\resources\router.exe 
+. .\src\main\resources\router.exe --drop-rate=0.4 
+. .\src\main\resources\router.exe --max-delay=2ms
+. .\src\main\resources\router.exe --drop-rate=0.4 --max-delay=2ms

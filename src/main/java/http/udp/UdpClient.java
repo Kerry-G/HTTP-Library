@@ -125,7 +125,7 @@ public class UdpClient {
         //ARQ stuff
         while (!sendingDone){
             try {
-                Thread.sleep(2000);
+                Thread.sleep(500);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
