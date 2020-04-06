@@ -75,10 +75,27 @@ public class UDPTests {
         Response response = request.send(8080);
         System.out.println(response.getBody());
         assertEquals(200,response.getStatus(),"Status should be 200");
-        //assertEquals(sb.toString() + "\n", response.getBody(), "Request content should be same as File Content");
     }
 
+    @Test
+    void SendGetUdpRequest(){
+        URL url = null;
 
+        try {
+            url = new URL("http://localhost/new_file.txt");
+        } catch ( MalformedURLException e) {
+            e.printStackTrace();
+        }
+
+        Request request = new RequestBuilder()
+                .setUrl(url)
+                .setMethod(Method.GET)
+                .createRequest();
+
+        Response response = request.send(8080);
+        System.out.println(response.getBody());
+        assertEquals(200,response.getStatus(),"Status should be 200");
+    }
 
     @Test
     @Ignore
