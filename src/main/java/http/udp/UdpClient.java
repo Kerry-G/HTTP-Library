@@ -69,8 +69,8 @@ public class UdpClient {
         sendPacket(Packet.Type.SYN, startingSequenceNumber, String.valueOf(nbOfPackets));
         while(!connectionEstablish){
             try {
-                Thread.sleep(300);
-                sendPacket(Packet.Type.SYN, startingSequenceNumber, String.valueOf(nbOfPackets));
+                Thread.sleep(200);
+                if(!connectionEstablish) sendPacket(Packet.Type.SYN, startingSequenceNumber, String.valueOf(nbOfPackets));
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
