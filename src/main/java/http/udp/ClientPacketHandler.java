@@ -23,7 +23,6 @@ public class ClientPacketHandler implements PacketHandler {
 
             final Packet.Type type = packet.getType();
             final long sequenceNumber = packet.getSequenceNumber();
-            udpClient.setSequenceNumber(sequenceNumber);
             udpClient.setLastSequenceNumberReceived(sequenceNumber);
             switch (type){
                 case DATA:

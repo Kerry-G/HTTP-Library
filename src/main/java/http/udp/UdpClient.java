@@ -27,7 +27,6 @@ public class UdpClient {
     DatagramChannel channel;
     Integer nbOfPackets = -1;
     long startingSequenceNumber = (long) (Math.random() * 100);
-    long sequenceNumber = startingSequenceNumber;
     long lastSequenceNumberReceived = -1;
     private boolean done = false;
 
@@ -59,10 +58,6 @@ public class UdpClient {
 
     public void setLastSequenceNumberReceived(long l){
         lastSequenceNumberReceived = l;
-    }
-
-    public void setSequenceNumber(long sequenceNumber) {
-        this.sequenceNumber = sequenceNumber;
     }
 
     public boolean getConnectionEstablish(){
@@ -110,9 +105,9 @@ public class UdpClient {
         nbOfPackets = Math.floorDiv(serialized.length(), (Packet.MAX_LEN - Packet.MIN_LEN))+1;
         handshake();
         System.out.println("Sending " + nbOfPackets + " packets.");
-        System.out.println("Currently at packets: " + sequenceNumber);
-        long lastSequence = nbOfPackets + sequenceNumber + 1; // Last sequence number we receive is SYNACK (n+1) + nbOfPacket we sent + 1
-        List<Packet> list = PacketListHandler.createPacketList(serialized, this.address, this.port, sequenceNumber+1);
+        System.out.println("Currently at packets: " + lastSequenceNumberReceived);
+        long lastSequence = nbOfPackets + lastSequenceNumberReceived + 1; // Last sequence number we receive is SYNACK (n+1) + nbOfPacket we sent + 1
+        List<Packet> list = PacketListHandler.createPacketList(serialized, this.address, this.port, lastSequenceNumberReceived+1);
 
         for (Packet p: list){
             sendPacket(p);
