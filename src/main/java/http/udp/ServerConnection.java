@@ -10,7 +10,7 @@ public class ServerConnection {
     private int nbOfResponsePacketsExpected;
     private int port;
     private long SequenceNumber;
-    private PacketListHandler packetListHandler = new PacketListHandler();
+    private PacketListHandler packetListHandler;
     private InetAddress inetAddress;
 
     public int getNbOfPacketsExpected() {
@@ -55,5 +55,9 @@ public class ServerConnection {
 
     public void setPort(int port) {
         this.port = port;
+    }
+
+    public void setPacketListHandler(PacketListHandler packetListHandler) {
+        this.packetListHandler = packetListHandler;
     }
 }

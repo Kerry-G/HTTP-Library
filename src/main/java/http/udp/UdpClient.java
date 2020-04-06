@@ -26,7 +26,8 @@ public class UdpClient {
     final String NO_PAYLOAD = "NO_PAYLOAD";
     DatagramChannel channel;
     Integer nbOfPackets = -1;
-    long startingSequenceNumber = (long) (Math.random() * 100);
+//    long startingSequenceNumber = (long) (Math.random() * 100);
+    long startingSequenceNumber = 0;
     long lastSequenceNumberReceived = -1;
     private boolean done = false;
 
@@ -43,7 +44,6 @@ public class UdpClient {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        this.packetListHandler = new PacketListHandler();
         this.address = address;
         this.port = port;
     }
@@ -104,10 +104,19 @@ public class UdpClient {
     public String send(String serialized)  {
         nbOfPackets = Math.floorDiv(serialized.length(), (Packet.MAX_LEN - Packet.MIN_LEN))+1;
         handshake();
+
         System.out.println("Sending " + nbOfPackets + " packets.");
         System.out.println("Currently at packets: " + lastSequenceNumberReceived);
         long lastSequence = nbOfPackets + lastSequenceNumberReceived + 1; // Last sequence number we receive is SYNACK (n+1) + nbOfPacket we sent + 1
         List<Packet> list = PacketListHandler.createPacketList(serialized, this.address, this.port, lastSequenceNumberReceived+1);
+
+        // SYN seq. 0
+        // DATA seq 3 (lastSequenceNbRec+1)
+        // DATA FULLY SEND (lastSequenceNbRec+1 + nbOfPackets) -> 6
+        // PACKET REQUEST -> 7
+        if(getPacketListHandler() == null) {
+           setPacketListHandler( new PacketListHandler(lastSequence + 2L));
+        }
 
         for (Packet p: list){
             sendPacket(p);
@@ -124,9 +133,13 @@ public class UdpClient {
 
             System.out.println("TODO: Server is missing packets");
             System.out.println("Last sequence number received is: " + lastSequenceNumberReceived + ". Should be more or equal than: " + lastSequence);
-
+            long packetToSend = lastSequenceNumberReceived;
+            if(lastSequenceNumberReceived < list.get(0).getSequenceNumber()){
+                packetToSend = list.get(0).getSequenceNumber();
+            }
+            System.out.println("Trying to send packet#: " + packetToSend);
             for (Packet p : list){
-                if (p.getSequenceNumber() == lastSequenceNumberReceived) {
+                if (p.getSequenceNumber() == packetToSend) {
                     sendPacket(p);
                     break;
                 }
@@ -144,5 +157,9 @@ public class UdpClient {
     public void setDone(boolean done) {
         Logger.println("Received response.");
         this.done = done;
+    }
+
+    public void setPacketListHandler(PacketListHandler packetListHandler) {
+        this.packetListHandler = packetListHandler;
     }
 }

@@ -26,6 +26,7 @@ public class Server {
     Boolean serverOn = true;
     HashMap<InetAddress, ServerConnection> serverConnectionHashMap;
     ArrayDeque<ServerConnection> serverConnectionsDone = new ArrayDeque<ServerConnection>();
+    ServerConnection currentlyHandledServerConnection;
 
 
     public Server(int port){
@@ -46,6 +47,14 @@ public class Server {
 
     public HashMap<InetAddress, ServerConnection> getServerConnectionHashMap() {
         return serverConnectionHashMap;
+    }
+
+    public ServerConnection getCurrentlyHandledServerConnection() {
+        return currentlyHandledServerConnection;
+    }
+
+    public void setCurrentlyHandledServerConnection(ServerConnection currentlyHandledServerConnection) {
+        this.currentlyHandledServerConnection = currentlyHandledServerConnection;
     }
 
     public void addServerConnectionToQueue(ServerConnection sc){
@@ -87,6 +96,7 @@ public class Server {
                     continue;
                 }
                 ServerConnection sc = serverConnectionsDone.pop();
+                setCurrentlyHandledServerConnection(sc);
                 Request request = Request.fromBufferedReader(sc.getPacketListHandler().getPayload());
                 RequestHandler handler = new FileServerHandler(getDirectoyPath());
                 Response response = handler.handleRequest(request);
@@ -112,20 +122,23 @@ public class Server {
                 e.printStackTrace();
             }
         }
-        final boolean b = sc.getSequenceNumber() <= lastSequence;
-        while (b){
+
+        while (sc.getSequenceNumber() < lastSequence){
             try {
                 Thread.sleep(500);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-            System.out.println("Server Connection last number:" + sc.getSequenceNumber());
-            System.out.println("Last sequence we expected: " + lastSequence);
-            if (sc.getSequenceNumber() <= lastSequence) break;
+
             System.out.println("TODO: Client is missing packets");
             System.out.println("Last sequence number received is: " + sc.getSequenceNumber() + ". Should be : " + lastSequence);
+            long packetToSend = sc.getSequenceNumber();
+            if(sc.getSequenceNumber() < list.get(0).getSequenceNumber()){
+                packetToSend = list.get(0).getSequenceNumber();
+            }
+            System.out.println("Trying to send packet#: " + packetToSend);
             for (Packet p : list){
-                if (p.getSequenceNumber() == sc.getSequenceNumber()) {
+                if (p.getSequenceNumber() == packetToSend) {
                     try {
                         sender.send(p);
                     } catch (IOException e) {

@@ -39,25 +39,33 @@ public class PacketListHandler {
 
     private List<Packet> list;
     private long lastKnownSequenceNumber;
-    public PacketListHandler(){
+    final private long firstSequenceNumber;
+
+    public PacketListHandler(long firstSequenceNumber){
         list = new ArrayList<Packet>();
+        this.firstSequenceNumber = firstSequenceNumber;
+        this.lastKnownSequenceNumber = firstSequenceNumber;
+        System.out.println("firstSequenceNumber: " + firstSequenceNumber);
+    }
+
+    public long getFirstSequenceNumber(){
+        return firstSequenceNumber;
     }
 
     public long add(Packet p){
         // Keeps Packets sorted as they enter
-        if(list.contains(p)) return -1;
-        list.add(p);
+
+
+        if(!list.contains(p)) list.add(p);
         list.sort(Comparator.comparingLong(Packet::getSequenceNumber));
 
-        long sequenceNumber = list.get(0).getSequenceNumber();
+        lastKnownSequenceNumber = firstSequenceNumber;
         for (Packet packet: list){ // ordered list
-            if (packet.getSequenceNumber() == sequenceNumber) continue;
-            else if (packet.getSequenceNumber() == sequenceNumber + 1){
-                sequenceNumber++;
-            } else break;
+            if(packet.getSequenceNumber() == lastKnownSequenceNumber){
+                lastKnownSequenceNumber++;
+            }
         }
 
-        lastKnownSequenceNumber = sequenceNumber + 1;
         return lastKnownSequenceNumber;
     }
 

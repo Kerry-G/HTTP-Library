@@ -31,7 +31,7 @@ public class ServerPacketHandler implements PacketHandler {
                     break;
                 case SYN:
                     Logger.debug("SYN received");
-                    handleSynPacket(packet, sequenceNumber, payload);
+                    handleSynPacket(packet);
                     break;
                 case ACKSYN:
                     Logger.debug("SYN-ACK received (should not happen)");
@@ -39,7 +39,7 @@ public class ServerPacketHandler implements PacketHandler {
                     break;
                 case ACK:
                     Logger.debug("ACK received");
-                    if (!server.isConnectionActive(packet.getPeerAddress())) return;
+                    // check if server is active
                     handleAckPacket(packet, sequenceNumber);
                     break;
             }
@@ -59,8 +59,10 @@ public class ServerPacketHandler implements PacketHandler {
 
 
     private void handleAckPacket(Packet packet, long sequenceNumber) {
-        final ServerConnection serverConnection = server.getServerConnectionHashMap().get(
-                packet.getPeerAddress());
+        ServerConnection serverConnection = server.getServerConnectionHashMap().get(packet.getPeerAddress());
+        if(serverConnection == null){
+            serverConnection = server.getCurrentlyHandledServerConnection();
+        }
         serverConnection.setSequenceNumber(sequenceNumber);
     }
 
@@ -82,18 +84,18 @@ public class ServerPacketHandler implements PacketHandler {
         sender.send(p);
     }
 
-    private void handleSynPacket(Packet packet, long sequenceNumber, byte[] payload) throws IOException {
+    private void handleSynPacket(Packet packet) throws IOException {
         ServerConnection serverConnection = new ServerConnection();
         serverConnection.setInetAddress(packet.getPeerAddress());
         serverConnection.setPort(packet.getPeerPort());
-        serverConnection.setSequenceNumber(sequenceNumber);
-        serverConnection.setNbOfPacketsExpected(Integer.parseInt(new String(payload)));
-
+        serverConnection.setSequenceNumber(packet.getSequenceNumber());
+        serverConnection.setNbOfPacketsExpected(Integer.parseInt(new String(packet.getPayload())));
+        serverConnection.setPacketListHandler(new PacketListHandler(packet.getSequenceNumber()+3));
         server.addConnection(serverConnection);
 
         Packet p = packet.toBuilder()
               .setType(Packet.Type.ACKSYN)
-              .setSequenceNumber((sequenceNumber+1))
+              .setSequenceNumber((packet.getSequenceNumber()+1))
               .create();
 
         sender.send(p);
